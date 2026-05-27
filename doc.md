@@ -1,12 +1,21 @@
-# Bio-Inspired AI projects proposal
-## Overview
+# EVolutionary Forest (EV-F) 
+Bio-Inspired AI project
 
-## 1. Life Game
+## TO DO
 
-## 2. Game AI, single and multi agent
+1. Raccogli references:
+   1. Video e sw (DONE)
+   2. Papers (un paio, uno stato critico cercare se esiste già RL, o EA o GA per cose simili)
+2. Formula proposta:
+   1. Esposizione problema (descrivi il setting)
+   2. Definire l'obiettivo (che poi sarà simil fitness function)
+   3. Possibili implementazioni (GA, EA, RL, maybe swarm)
+3. Manda proposta 
 
-## 3. Real time navigation from real map extracted graph
-Idea(raw):
-1. Take a real map, extract a 2d version in a simulated engine
-2. Spawn many agents representing fictional people moving from A to B, from B to C exc exc
-3. Use different Bio-AI techniques for optimizing the routing of agent that have to travel on the graph in real time
+4. `main` branch con simulatore fatto 
+
+## References
+
+- [Svelte](https://svelte.dev/) - [Flask](https://flask.palletsprojects.com/en/stable/) (web dev)
+- [video](https://www.youtube.com/watch?v=HBluLfX2F_k) - [simulator](https://www.veritasium.com/simulation5) (veritasium material)
+- [Applying Self-Organised Criticality to Evolutionary Algorithms](https://link.springer.com/chapter/10.1007/3-540-45356-3_37) (TO CHECK)
