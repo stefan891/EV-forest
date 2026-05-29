@@ -1,0 +1,128 @@
+"""Single-objective genetic algorithm.
+
+Uses the scalar fitness from `fitness.evaluate`. Stops on any of:
+  1. An individual passes `is_fit_enough` (target met)
+  2. `max_generations` reached
+  3. `ConvergenceTracker` reports no improvement for `patience` generations
+
+Returns a full run history so the frontend can plot the learning curve.
+"""
+
+from __future__ import annotations
+
+from dataclasses import dataclass, field
+from typing import Callable
+
+import numpy as np
+
+from .chromosome import bit_flip_mutation, random_individual, uniform_crossover
+from .fitness import (
+    ConvergenceTracker,
+    FitnessConfig,
+    FitnessReport,
+    evaluate,
+    is_fit_enough,
+    protect_ignition,
+)
+
+
+@dataclass
+class GAStats:
+    generation: int
+    best_fitness: float
+    mean_fitness: float
+    best_report: FitnessReport
+
+
+@dataclass
+class GAResult:
+    best_individual: np.ndarray
+    best_report: FitnessReport
+    history: list[GAStats]
+    generations_run: int
+    stopped_reason: str  # "fit_enough" | "max_generations" | "converged"
+
+
+def _tournament_pick(
+    fitnesses: np.ndarray,
+    tournament_size: int,
+    rng: np.random.Generator,
+) -> int:
+    """Pick tournament_size random individuals, return index of the fittest."""
+    contenders = rng.integers(0, len(fitnesses), size=tournament_size)
+    winner = contenders[np.argmax(fitnesses[contenders])]
+    return int(winner)
+
+
+def run_ga(
+    config: FitnessConfig,
+    population_size: int = 80,
+    max_generations: int = 100,
+    tournament_size: int = 3,
+    crossover_rate: float = 0.9,
+    mutation_rate: float = 0.01,
+    initial_cut_probability: float = 0.1,
+    elitism: int = 2,
+    patience: int = 25,
+    seed: int = 0,
+    progress_callback: Callable[[GAStats], None] | None = None,
+) -> GAResult:
+    rng = np.random.default_rng(seed)
+    shape = config.forest_grid.shape
+
+    population: list[np.ndarray] = [
+        random_individual(shape, initial_cut_probability, rng)
+        for _ in range(population_size)
+    ]
+    reports: list[FitnessReport] = [evaluate(ind, config) for ind in population]
+    fitnesses = np.array([r.scalar_fitness for r in reports])
+
+    history: list[GAStats] = []
+    tracker = ConvergenceTracker(patience=patience)
+    stopped_reason = "max_generations"
+
+    for gen in range(max_generations):
+        best_idx = int(np.argmax(fitnesses))
+        stats = GAStats(
+            generation=gen,
+            best_fitness=float(fitnesses[best_idx]),
+            mean_fitness=float(fitnesses.mean()),
+            best_report=reports[best_idx],
+        )
+        history.append(stats)
+        if progress_callback is not None:
+            progress_callback(stats)
+
+        if is_fit_enough(reports[best_idx], config):
+            stopped_reason = "fit_enough"
+            break
+        if tracker.update(stats.best_fitness):
+            stopped_reason = "converged"
+            break
+
+        # Elitism: carry the top `elitism` individuals.
+        elite_idx = np.argsort(fitnesses)[-elitism:][::-1] if elitism > 0 else []
+        next_pop: list[np.ndarray] = [population[i].copy() for i in elite_idx]
+
+        while len(next_pop) < population_size:
+            a = _tournament_pick(fitnesses, tournament_size, rng)
+            b = _tournament_pick(fitnesses, tournament_size, rng)
+            if rng.random() < crossover_rate:
+                child = uniform_crossover(population[a], population[b], rng)
+            else:
+                child = population[a].copy()
+            child = bit_flip_mutation(child, mutation_rate, rng)
+            next_pop.append(child)
+
+        population = next_pop
+        reports = [evaluate(ind, config) for ind in population]
+        fitnesses = np.array([r.scalar_fitness for r in reports])
+
+    best_idx = int(np.argmax(fitnesses))
+    return GAResult(
+        best_individual=protect_ignition(population[best_idx], config),
+        best_report=reports[best_idx],
+        history=history,
+        generations_run=len(history),
+        stopped_reason=stopped_reason,
+    )
