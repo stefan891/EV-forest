@@ -4,7 +4,7 @@ Bio-Inspired AI course project. Optimize forest cuts to minimize wildfire
 spread while maximizing surviving trees, using a genetic algorithm and
 NSGA-II for the multi-objective trade-off.
 
-## Problem in one paragraph
+## Problem description
 
 A forest is a 2D grid of trees. Fire spreads from any burning tree to its 8
 neighbors (diagonals included) if they are also trees; a single empty cell
