@@ -1,0 +1,168 @@
+"""Sweep operator parameters on the pinned 60x60-70 problem.
+
+GA: mutation_rate x crossover_rate x tournament_size = 27 runs
+NSGA-II: mutation_rate x crossover_rate = 9 runs (parent selection is fixed
+in NSGA-II — binary tournament with rank + crowding comparison).
+
+Population and generation budgets are pinned to baseline values (GA: pop=60,
+gen=50; NSGA-II: pop=60, gen=40) so the only varying factor is the operator
+parameters.
+
+Runs in parallel via `ProcessPoolExecutor` with `MAX_WORKERS=4`. Writes per-run
+results to `operators_sweep.json` keyed by either
+`ga-mut{m}-xover{c}-tour{t}` or `nsga2-mut{m}-xover{c}`. Run from `backend/`:
+
+    uv run python tests/run_operators_sweep.py
+"""
+
+from __future__ import annotations
+
+import json
+import time
+from concurrent.futures import ProcessPoolExecutor, as_completed
+from pathlib import Path
+
+from ev_forest.fitness import FitnessConfig, is_fit_enough
+from ev_forest.forest import make_forest
+from ev_forest.ga import run_ga
+from ev_forest.nsga2 import run_nsga2
+
+RESULTS_FILE = Path(__file__).parent / "operators_sweep.json"
+
+PROBLEM = {"dim": 60, "pct": 70}
+GA_POP, GA_GEN = 60, 50
+NSGA2_POP, NSGA2_GEN = 60, 40
+SEED = 0
+MAX_WORKERS = 6
+
+MUTATION_RATES = [0.005, 0.01, 0.05]
+CROSSOVER_RATES = [0.5, 0.7, 0.9]
+TOURNAMENT_SIZES = [2, 3, 5]
+
+
+def _build_config() -> FitnessConfig:
+    forest = make_forest(
+        rows=PROBLEM["dim"], cols=PROBLEM["dim"],
+        layout="random", density=PROBLEM["pct"] / 100.0, seed=SEED,
+    )
+    return FitnessConfig(
+        forest_grid=forest.grid,
+        ignition_strategy="random",
+        ignition_samples=8,
+        ignition_seed=SEED,
+    )
+
+
+def _ga_run(config: FitnessConfig, mut: float, xover: float, tour: int) -> dict:
+    t0 = time.time()
+    result = run_ga(
+        config,
+        population_size=GA_POP, max_generations=GA_GEN,
+        mutation_rate=mut, crossover_rate=xover, tournament_size=tour,
+        seed=SEED,
+    )
+    return {
+        "seed": SEED,
+        "mutation_rate": mut,
+        "crossover_rate": xover,
+        "tournament_size": tour,
+        "population_size": GA_POP,
+        "max_generations": GA_GEN,
+        "stopped_reason": result.stopped_reason,
+        "generations_run": result.generations_run,
+        "runtime_seconds": round(time.time() - t0, 2),
+        "is_fit_enough": is_fit_enough(result.best_report, config),
+        "best_report": result.best_report.as_dict(),
+    }
+
+
+def _nsga2_run(config: FitnessConfig, mut: float, xover: float) -> dict:
+    t0 = time.time()
+    result = run_nsga2(
+        config,
+        population_size=NSGA2_POP, max_generations=NSGA2_GEN,
+        mutation_rate=mut, crossover_rate=xover,
+        seed=SEED,
+    )
+    return {
+        "seed": SEED,
+        "mutation_rate": mut,
+        "crossover_rate": xover,
+        "population_size": NSGA2_POP,
+        "max_generations": NSGA2_GEN,
+        "generations_run": result.generations_run,
+        "runtime_seconds": round(time.time() - t0, 2),
+        "pareto_front_size": len(result.pareto_front),
+        "pareto_summary": [
+            {"trees_survived": r.trees_survived,
+             "trees_burned": r.trees_burned,
+             "trees_cut": r.trees_cut}
+            for r in result.pareto_reports
+        ],
+    }
+
+
+def _execute(args: tuple) -> tuple:
+    """Worker entry point. `tour` is None for NSGA-II."""
+    alg, mut, xover, tour, config = args
+    if alg == "ga":
+        run = _ga_run(config, mut, xover, tour)
+    else:
+        run = _nsga2_run(config, mut, xover)
+    return (alg, mut, xover, tour), run
+
+
+def _make_key(alg: str, mut: float, xover: float, tour: int | None) -> str:
+    if alg == "ga":
+        return f"ga-mut{mut}-xover{xover}-tour{tour}"
+    return f"nsga2-mut{mut}-xover{xover}"
+
+
+def main() -> None:
+    config = _build_config()
+    tasks: list[tuple] = []
+    for mut in MUTATION_RATES:
+        for xover in CROSSOVER_RATES:
+            for tour in TOURNAMENT_SIZES:
+                tasks.append(("ga", mut, xover, tour, config))
+            tasks.append(("nsga2", mut, xover, None, config))
+
+    total = len(tasks)
+    results: dict[str, dict] = {
+        "_problem": {
+            "rows": PROBLEM["dim"],
+            "cols": PROBLEM["dim"],
+            "layout": "random",
+            "density": PROBLEM["pct"] / 100.0,
+            "ignition_strategy": "random",
+            "ignition_samples": 8,
+            "seed": SEED,
+            "ga_population": GA_POP,
+            "ga_generations": GA_GEN,
+            "nsga2_population": NSGA2_POP,
+            "nsga2_generations": NSGA2_GEN,
+        },
+    }
+    done = 0
+    overall_start = time.time()
+    print(f"Dispatching {total} runs across {MAX_WORKERS} workers...", flush=True)
+
+    with ProcessPoolExecutor(max_workers=MAX_WORKERS) as pool:
+        futures = {pool.submit(_execute, t): t for t in tasks}
+        for fut in as_completed(futures):
+            (alg, mut, xover, tour), run = fut.result()
+            done += 1
+            key = _make_key(alg, mut, xover, tour)
+            print(f"[{done}/{total}] {key} done in {run['runtime_seconds']}s", flush=True)
+            cfg = {"algorithm": alg, "mutation_rate": mut, "crossover_rate": xover}
+            if tour is not None:
+                cfg["tournament_size"] = tour
+            results[key] = {"config": cfg, "run": run}
+
+    RESULTS_FILE.write_text(json.dumps(results, indent=2))
+    print(f"\nWrote {len(results) - 1} entries to {RESULTS_FILE}")
+    print(f"Total runtime: {time.time() - overall_start:.1f}s")
+
+
+if __name__ == "__main__":
+    main()
