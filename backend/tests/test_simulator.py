@@ -1,4 +1,4 @@
-"""Tests pinning down the load-bearing fire-spread invariants from CLAUDE.md."""
+"""Tests pinning down the load-bearing fire-spread invariants."""
 
 from __future__ import annotations
 
@@ -10,7 +10,7 @@ from ev_forest.simulator import simulate_fire, simulate_with_cut
 
 
 def test_baseline_layout_is_fire_safe():
-    """Per CLAUDE.md: every tree surrounded by a 1-cell empty ring => no spread."""
+    """Every tree surrounded by a 1-cell empty ring => no spread."""
     forest = make_forest(11, 11, layout="baseline")
     # Ignite the center tree (which exists in baseline at (0,0), (0,2), ..., so (10,10)).
     # Center of 11x11 is (5,5) — odd index, not a tree in baseline. Pick (4,4) instead.

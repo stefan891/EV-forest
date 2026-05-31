@@ -23,6 +23,8 @@
     optimizer_seed: 1,
     ignition_strategy: 'random',
     ignition_samples: 12,
+    selection_strategy: 'tournament',
+    tournament_size: 3,
   };
 
   let grid = [];
@@ -119,6 +121,8 @@
       grid,
       population_size: params.population_size,
       max_generations: params.max_generations,
+      selection_strategy: params.selection_strategy,
+      tournament_size: params.tournament_size,
       mutation_rate: params.mutation_rate,
       crossover_rate: params.crossover_rate,
       initial_cut_probability: params.initial_cut_probability,

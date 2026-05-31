@@ -20,12 +20,12 @@
     ...frontPoints,
     ...(baseline ? [baseline] : []),
   ];
-  $: maxBurned = allReports.length ? Math.max(...allReports.map(r => r.trees_burned), 1) : 1;
+  $: maxCut = allReports.length ? Math.max(...allReports.map(r => r.trees_cut), 1) : 1;
   $: maxSurvived = allReports.length ? Math.max(...allReports.map(r => r.trees_survived), 1) : 1;
   $: original = allReports.length ? allReports[0].trees_original : 1;
 
   function x(p) {
-    return padL + (p.trees_burned / maxBurned) * (width - padL - padR);
+    return padL + (p.trees_cut / maxCut) * (width - padL - padR);
   }
   function y(p) {
     return height - padB - (p.trees_survived / maxSurvived) * (height - padT - padB);
@@ -34,13 +34,13 @@
   // Tick marks at 0, 25, 50, 75, 100% of original tree count.
   $: xTicks = [0, 0.25, 0.5, 0.75, 1.0]
     .map(f => f * original)
-    .filter(v => v <= maxBurned * 1.01);
+    .filter(v => v <= maxCut * 1.01);
   $: yTicks = [0, 0.25, 0.5, 0.75, 1.0]
     .map(f => f * original)
     .filter(v => v <= maxSurvived * 1.01);
 
   function tickX(v) {
-    return padL + (v / maxBurned) * (width - padL - padR);
+    return padL + (v / maxCut) * (width - padL - padR);
   }
   function tickY(v) {
     return height - padB - (v / maxSurvived) * (height - padT - padB);
@@ -51,7 +51,7 @@
   <svg width={width} height={height} aria-label="Pareto front: trees burned vs trees survived">
     <!-- Title -->
     <text x={width / 2} y={16} text-anchor="middle" fill="#cbd5e1" font-size="12" font-weight="600">
-      Trade-off: fewer burned ↔ more survived
+      Trade-off: fewer cuts ↔ more survived
     </text>
 
     <!-- Grid lines -->
@@ -83,7 +83,7 @@
 
     <!-- Axis labels -->
     <text x={(padL + width - padR) / 2} y={height - 8} text-anchor="middle" fill="#94a3b8" font-size="11">
-      trees burned (% of original) — lower is better →
+      trees cut (% of original) — lower is better →
     </text>
     <text x={14} y={(padT + height - padB) / 2} fill="#94a3b8" font-size="11"
           transform={`rotate(-90, 14, ${(padT + height - padB) / 2})`} text-anchor="middle">

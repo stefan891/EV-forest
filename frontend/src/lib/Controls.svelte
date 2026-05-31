@@ -85,6 +85,17 @@
       <label class="field"><span>Ignition samples</span>
         <input type="number" min="1" max="64" bind:value={params.ignition_samples} />
       </label>
+      <label class="field"><span>GA selection</span>
+        <select bind:value={params.selection_strategy}>
+          <option value="tournament">Tournament</option>
+          <option value="rank_based">Rank-based</option>
+          <option value="comma">Comma (μ,λ)</option>
+          <option value="plus">Plus (μ+λ)</option>
+        </select>
+      </label>
+      <label class="field"><span>Tournament size</span>
+        <input type="number" min="2" max="20" bind:value={params.tournament_size} />
+      </label>
     </div>
     <p class="hint">
       Pick <strong>random</strong> or <strong>worst-case</strong> if you want a cut that

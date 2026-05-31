@@ -118,6 +118,8 @@ def run_nsga2(
     config: FitnessConfig,
     population_size: int = 80,
     max_generations: int = 80,
+    selection_strategy: str = "tournament",
+    tournament_size: int = 2,
     crossover_rate: float = 0.9,
     mutation_rate: float = 0.01,
     initial_cut_probability: float = 0.15,
@@ -134,7 +136,7 @@ def run_nsga2(
     hi = min(0.7, initial_cut_probability * 3.0)
     init_probs = np.linspace(lo, hi, population_size)
     population: list[np.ndarray] = [
-        random_individual(shape, float(p), rng) for p in init_probs
+        random_individual(shape, float(p), rng, forest_grid=config.forest_grid) for p in init_probs
     ]
     reports: list[FitnessReport] = [evaluate(ind, config) for ind in population]
     objectives: list[tuple[float, float]] = [r.objectives for r in reports]
@@ -174,6 +176,7 @@ def run_nsga2(
                 child = uniform_crossover(population[p1], population[p2], rng)
             else:
                 child = population[p1].copy()
+            # Mutation
             child = bit_flip_mutation(child, mutation_rate, rng)
             offspring.append(child)
 

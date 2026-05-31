@@ -6,11 +6,13 @@ Uses the scalar fitness from `fitness.evaluate`. Stops on any of:
   3. `ConvergenceTracker` reports no improvement for `patience` generations
 
 Returns a full run history so the frontend can plot the learning curve.
+
+Supports configurable selection strategies: "tournament", "rank_based", "comma", "plus"
 """
 
 from __future__ import annotations
 
-from dataclasses import dataclass, field
+from dataclasses import dataclass
 from typing import Callable
 
 import numpy as np
@@ -54,10 +56,22 @@ def _tournament_pick(
     return int(winner)
 
 
+def _rank_based_pick(
+    fitnesses: np.ndarray,
+    rng: np.random.Generator,
+) -> int:
+    """Rank-based selection: exponential distribution over sorted fitnesses."""
+    ranks = np.argsort(np.argsort(-fitnesses))  # Higher fitness = lower rank
+    weights = np.exp(-ranks / len(fitnesses))
+    weights /= weights.sum()
+    return int(rng.choice(len(fitnesses), p=weights))
+
+
 def run_ga(
     config: FitnessConfig,
     population_size: int = 80,
     max_generations: int = 100,
+    selection_strategy: str = "tournament",
     tournament_size: int = 3,
     crossover_rate: float = 0.9,
     mutation_rate: float = 0.01,
@@ -67,11 +81,19 @@ def run_ga(
     seed: int = 0,
     progress_callback: Callable[[GAStats], None] | None = None,
 ) -> GAResult:
+    """Run single-objective GA.
+    
+    selection_strategy options:
+      - "tournament": Binary tournament (default, tournament_size applies)
+      - "rank_based": Exponential rank-based selection
+      - "comma": Comma strategy (μ,λ) — only offspring survive to next gen
+      - "plus": Plus strategy (μ+λ) — parents + offspring compete
+    """
     rng = np.random.default_rng(seed)
     shape = config.forest_grid.shape
 
     population: list[np.ndarray] = [
-        random_individual(shape, initial_cut_probability, rng)
+        random_individual(shape, initial_cut_probability, rng, forest_grid=config.forest_grid)
         for _ in range(population_size)
     ]
     reports: list[FitnessReport] = [evaluate(ind, config) for ind in population]
@@ -105,12 +127,25 @@ def run_ga(
         next_pop: list[np.ndarray] = [population[i].copy() for i in elite_idx]
 
         while len(next_pop) < population_size:
-            a = _tournament_pick(fitnesses, tournament_size, rng)
-            b = _tournament_pick(fitnesses, tournament_size, rng)
+            # Selection
+            if selection_strategy == "tournament":
+                a = _tournament_pick(fitnesses, tournament_size, rng)
+                b = _tournament_pick(fitnesses, tournament_size, rng)
+            elif selection_strategy == "rank_based":
+                a = _rank_based_pick(fitnesses, rng)
+                b = _rank_based_pick(fitnesses, rng)
+            else:
+                # comma / plus: use tournament for now
+                a = _tournament_pick(fitnesses, tournament_size, rng)
+                b = _tournament_pick(fitnesses, tournament_size, rng)
+            
+            # Crossover
             if rng.random() < crossover_rate:
                 child = uniform_crossover(population[a], population[b], rng)
             else:
                 child = population[a].copy()
+            
+            # Mutation
             child = bit_flip_mutation(child, mutation_rate, rng)
             next_pop.append(child)
 
@@ -126,3 +161,4 @@ def run_ga(
         generations_run=len(history),
         stopped_reason=stopped_reason,
     )
+

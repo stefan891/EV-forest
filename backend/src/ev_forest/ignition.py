@@ -1,6 +1,6 @@
 """Ignition strategies — how the fire starts.
 
-This is a modeling decision called out in CLAUDE.md: the burned-tree objective
+This is a modeling decision: the burned-tree objective
 depends on what gets ignited. We expose three strategies; the optimizer picks
 one and the fitness function uses it consistently across all individuals.
 """
