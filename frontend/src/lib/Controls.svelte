@@ -34,8 +34,26 @@
       </label>
     </div>
     <div class="row" style="margin-top: 0.75rem;">
+      <label class="field"><span>Hot zones</span>
+        <input type="number" min="0" max="20" bind:value={params.n_hotspots} />
+      </label>
+      <label class="field"><span>Heat seed</span>
+        <input type="number" bind:value={params.heatmap_seed} />
+      </label>
+      <label class="field"><span>Heat strength</span>
+        <input type="number" step="0.5" min="0" max="50" bind:value={params.hotspot_strength} />
+      </label>
+    </div>
+    <p class="hint">
+      Hot zones bias the <strong>random</strong> / <strong>worst-case</strong> ignition
+      strategies (and the "Random spark" button) toward dangerous regions — drawn as a
+      red overlay on the canvas.
+    </p>
+    <div class="row" style="margin-top: 0.75rem;">
       <button class="primary" disabled={busy} on:click={() => emit('generate')}>Generate forest</button>
+      <button disabled={busy} on:click={() => emit('regenHeatmap')}>Regenerate hot zones</button>
       <button disabled={busy} on:click={() => emit('simulate')}>Run fire</button>
+      <button disabled={busy} on:click={() => emit('randomSpark')}>Random spark</button>
     </div>
   </section>
 

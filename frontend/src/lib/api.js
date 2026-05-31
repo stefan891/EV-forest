@@ -18,6 +18,10 @@ export function generateForest(params) {
   return post('/api/forest', params);
 }
 
+export function generateHeatmap(params) {
+  return post('/api/heatmap', params);
+}
+
 export function simulate(params) {
   return post('/api/simulate', params);
 }

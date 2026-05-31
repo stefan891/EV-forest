@@ -1,0 +1,464 @@
+{
+  "30x30-30-ga": {
+    "config": {
+      "rows": 30,
+      "cols": 30,
+      "layout": "random",
+      "density": 0.3,
+      "algorithm": "ga"
+    },
+    "runs": [
+      {
+        "seed": 0,
+        "stopped_reason": "fit_enough",
+        "generations_run": 1,
+        "runtime_seconds": 0.04,
+        "is_fit_enough": true,
+        "best_report": {
+          "trees_original": 251,
+          "trees_cut": 14,
+          "trees_remaining": 237,
+          "trees_burned": 4,
+          "trees_survived": 233,
+          "survival_rate": 0.9831223628691983,
+          "burn_rate": 0.01593625498007968,
+          "cut_rate": 0.055776892430278883,
+          "scalar_fitness": 218.0,
+          "objectives": [
+            233.0,
+            -4.0
+          ]
+        }
+      }
+    ]
+  },
+  "30x30-30-nsga2": {
+    "config": {
+      "rows": 30,
+      "cols": 30,
+      "layout": "random",
+      "density": 0.3,
+      "algorithm": "nsga2"
+    },
+    "runs": [
+      {
+        "seed": 0,
+        "generations_run": 40,
+        "runtime_seconds": 0.87,
+        "pareto_front_size": 2,
+        "pareto_summary": [
+          {
+            "trees_survived": 244,
+            "trees_burned": 2,
+            "trees_cut": 5
+          },
+          {
+            "trees_survived": 246,
+            "trees_burned": 3,
+            "trees_cut": 2
+          }
+        ]
+      }
+    ]
+  },
+  "30x30-50-ga": {
+    "config": {
+      "rows": 30,
+      "cols": 30,
+      "layout": "random",
+      "density": 0.5,
+      "algorithm": "ga"
+    },
+    "runs": [
+      {
+        "seed": 0,
+        "stopped_reason": "fit_enough",
+        "generations_run": 5,
+        "runtime_seconds": 0.54,
+        "is_fit_enough": true,
+        "best_report": {
+          "trees_original": 429,
+          "trees_cut": 72,
+          "trees_remaining": 357,
+          "trees_burned": 16,
+          "trees_survived": 341,
+          "survival_rate": 0.9551820728291317,
+          "burn_rate": 0.037296037296037296,
+          "cut_rate": 0.16783216783216784,
+          "scalar_fitness": 273.0,
+          "objectives": [
+            341.0,
+            -16.0
+          ]
+        }
+      }
+    ]
+  },
+  "30x30-50-nsga2": {
+    "config": {
+      "rows": 30,
+      "cols": 30,
+      "layout": "random",
+      "density": 0.5,
+      "algorithm": "nsga2"
+    },
+    "runs": [
+      {
+        "seed": 0,
+        "generations_run": 40,
+        "runtime_seconds": 1.5,
+        "pareto_front_size": 9,
+        "pareto_summary": [
+          {
+            "trees_survived": 244,
+            "trees_burned": 2,
+            "trees_cut": 183
+          },
+          {
+            "trees_survived": 293,
+            "trees_burned": 3,
+            "trees_cut": 133
+          },
+          {
+            "trees_survived": 304,
+            "trees_burned": 4,
+            "trees_cut": 121
+          },
+          {
+            "trees_survived": 327,
+            "trees_burned": 5,
+            "trees_cut": 97
+          },
+          {
+            "trees_survived": 332,
+            "trees_burned": 6,
+            "trees_cut": 91
+          },
+          {
+            "trees_survived": 336,
+            "trees_burned": 10,
+            "trees_cut": 83
+          },
+          {
+            "trees_survived": 336,
+            "trees_burned": 10,
+            "trees_cut": 83
+          },
+          {
+            "trees_survived": 336,
+            "trees_burned": 10,
+            "trees_cut": 83
+          },
+          {
+            "trees_survived": 344,
+            "trees_burned": 12,
+            "trees_cut": 73
+          }
+        ]
+      }
+    ]
+  },
+  "30x30-70-ga": {
+    "config": {
+      "rows": 30,
+      "cols": 30,
+      "layout": "random",
+      "density": 0.7,
+      "algorithm": "ga"
+    },
+    "runs": [
+      {
+        "seed": 0,
+        "stopped_reason": "max_generations",
+        "generations_run": 50,
+        "runtime_seconds": 8.45,
+        "is_fit_enough": false,
+        "best_report": {
+          "trees_original": 606,
+          "trees_cut": 219,
+          "trees_remaining": 387,
+          "trees_burned": 9,
+          "trees_survived": 378,
+          "survival_rate": 0.9767441860465116,
+          "burn_rate": 0.01485148514851485,
+          "cut_rate": 0.3613861386138614,
+          "scalar_fitness": 250.5,
+          "objectives": [
+            378.0,
+            -9.0
+          ]
+        }
+      }
+    ]
+  },
+  "30x30-70-nsga2": {
+    "config": {
+      "rows": 30,
+      "cols": 30,
+      "layout": "random",
+      "density": 0.7,
+      "algorithm": "nsga2"
+    },
+    "runs": [
+      {
+        "seed": 0,
+        "generations_run": 40,
+        "runtime_seconds": 2.73,
+        "pareto_front_size": 6,
+        "pareto_summary": [
+          {
+            "trees_survived": 336,
+            "trees_burned": 5,
+            "trees_cut": 265
+          },
+          {
+            "trees_survived": 354,
+            "trees_burned": 6,
+            "trees_cut": 246
+          },
+          {
+            "trees_survived": 354,
+            "trees_burned": 6,
+            "trees_cut": 246
+          },
+          {
+            "trees_survived": 354,
+            "trees_burned": 6,
+            "trees_cut": 246
+          },
+          {
+            "trees_survived": 357,
+            "trees_burned": 8,
+            "trees_cut": 241
+          },
+          {
+            "trees_survived": 361,
+            "trees_burned": 20,
+            "trees_cut": 225
+          }
+        ]
+      }
+    ]
+  },
+  "60x60-30-ga": {
+    "config": {
+      "rows": 60,
+      "cols": 60,
+      "layout": "random",
+      "density": 0.3,
+      "algorithm": "ga"
+    },
+    "runs": [
+      {
+        "seed": 0,
+        "stopped_reason": "fit_enough",
+        "generations_run": 1,
+        "runtime_seconds": 0.03,
+        "is_fit_enough": true,
+        "best_report": {
+          "trees_original": 1066,
+          "trees_cut": 89,
+          "trees_remaining": 977,
+          "trees_burned": 7,
+          "trees_survived": 970,
+          "survival_rate": 0.9928352098259979,
+          "burn_rate": 0.006566604127579738,
+          "cut_rate": 0.08348968105065666,
+          "scalar_fitness": 911.5,
+          "objectives": [
+            970.0,
+            -7.0
+          ]
+        }
+      }
+    ]
+  },
+  "60x60-30-nsga2": {
+    "config": {
+      "rows": 60,
+      "cols": 60,
+      "layout": "random",
+      "density": 0.3,
+      "algorithm": "nsga2"
+    },
+    "runs": [
+      {
+        "seed": 0,
+        "generations_run": 40,
+        "runtime_seconds": 1.25,
+        "pareto_front_size": 5,
+        "pareto_summary": [
+          {
+            "trees_survived": 914,
+            "trees_burned": 2,
+            "trees_cut": 150
+          },
+          {
+            "trees_survived": 994,
+            "trees_burned": 3,
+            "trees_cut": 69
+          },
+          {
+            "trees_survived": 1012,
+            "trees_burned": 4,
+            "trees_cut": 50
+          },
+          {
+            "trees_survived": 1013,
+            "trees_burned": 7,
+            "trees_cut": 46
+          },
+          {
+            "trees_survived": 1015,
+            "trees_burned": 9,
+            "trees_cut": 42
+          }
+        ]
+      }
+    ]
+  },
+  "60x60-50-ga": {
+    "config": {
+      "rows": 60,
+      "cols": 60,
+      "layout": "random",
+      "density": 0.5,
+      "algorithm": "ga"
+    },
+    "runs": [
+      {
+        "seed": 0,
+        "stopped_reason": "fit_enough",
+        "generations_run": 7,
+        "runtime_seconds": 4.86,
+        "is_fit_enough": true,
+        "best_report": {
+          "trees_original": 1828,
+          "trees_cut": 353,
+          "trees_remaining": 1475,
+          "trees_burned": 84,
+          "trees_survived": 1391,
+          "survival_rate": 0.9430508474576271,
+          "burn_rate": 0.045951859956236324,
+          "cut_rate": 0.19310722100656455,
+          "scalar_fitness": 1046.5,
+          "objectives": [
+            1391.0,
+            -84.0
+          ]
+        }
+      }
+    ]
+  },
+  "60x60-50-nsga2": {
+    "config": {
+      "rows": 60,
+      "cols": 60,
+      "layout": "random",
+      "density": 0.5,
+      "algorithm": "nsga2"
+    },
+    "runs": [
+      {
+        "seed": 0,
+        "generations_run": 40,
+        "runtime_seconds": 3.08,
+        "pareto_front_size": 6,
+        "pareto_summary": [
+          {
+            "trees_survived": 1088,
+            "trees_burned": 4,
+            "trees_cut": 736
+          },
+          {
+            "trees_survived": 1251,
+            "trees_burned": 6,
+            "trees_cut": 571
+          },
+          {
+            "trees_survived": 1261,
+            "trees_burned": 8,
+            "trees_cut": 559
+          },
+          {
+            "trees_survived": 1278,
+            "trees_burned": 11,
+            "trees_cut": 539
+          },
+          {
+            "trees_survived": 1337,
+            "trees_burned": 15,
+            "trees_cut": 476
+          },
+          {
+            "trees_survived": 1345,
+            "trees_burned": 20,
+            "trees_cut": 463
+          }
+        ]
+      }
+    ]
+  },
+  "60x60-70-ga": {
+    "config": {
+      "rows": 60,
+      "cols": 60,
+      "layout": "random",
+      "density": 0.7,
+      "algorithm": "ga"
+    },
+    "runs": [
+      {
+        "seed": 0,
+        "stopped_reason": "max_generations",
+        "generations_run": 50,
+        "runtime_seconds": 49.51,
+        "is_fit_enough": false,
+        "best_report": {
+          "trees_original": 2519,
+          "trees_cut": 927,
+          "trees_remaining": 1592,
+          "trees_burned": 51,
+          "trees_survived": 1541,
+          "survival_rate": 0.967964824120603,
+          "burn_rate": 0.020246129416435093,
+          "cut_rate": 0.3680031758634379,
+          "scalar_fitness": 975.5,
+          "objectives": [
+            1541.0,
+            -51.0
+          ]
+        }
+      }
+    ]
+  },
+  "60x60-70-nsga2": {
+    "config": {
+      "rows": 60,
+      "cols": 60,
+      "layout": "random",
+      "density": 0.7,
+      "algorithm": "nsga2"
+    },
+    "runs": [
+      {
+        "seed": 0,
+        "generations_run": 40,
+        "runtime_seconds": 8.61,
+        "pareto_front_size": 2,
+        "pareto_summary": [
+          {
+            "trees_survived": 1375,
+            "trees_burned": 9,
+            "trees_cut": 1135
+          },
+          {
+            "trees_survived": 1412,
+            "trees_burned": 11,
+            "trees_cut": 1096
+          }
+        ]
+      }
+    ]
+  }
+}
