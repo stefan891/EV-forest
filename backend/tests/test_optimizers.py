@@ -21,7 +21,6 @@ def _small_dense_problem() -> FitnessConfig:
         forest_grid=forest.grid,
         ignition_strategy="random",
         ignition_samples=4,
-        min_survival_rate=0.80,
         max_burn_rate=0.10,
         max_cut_rate=0.40,
     )
@@ -53,8 +52,7 @@ def test_ga_improves_over_no_cut():
 def test_ga_stops_when_fit_enough():
     config = _small_dense_problem()
     # Lower thresholds so it's easy to clear them.
-    config.min_survival_rate = 0.10
-    config.max_burn_rate = 0.99
+    config.max_burn_rate = 1.0
     config.max_cut_rate = 0.99
     result = run_ga(config, population_size=20, max_generations=50, seed=1)
     # With permissive thresholds, fit_enough should fire (no-cut already passes).

@@ -12,8 +12,7 @@
     layout: 'dense',
     density: 1.0,
     seed: 0,
-    min_survival_rate: 0.85,
-    max_burn_rate: 0.05,
+    max_burn_rate: 0.10,
     max_cut_rate: 0.30,
     population_size: 60,
     max_generations: 50,
@@ -133,7 +132,6 @@
       ignition_strategy: params.ignition_strategy,
       ignition_samples: params.ignition_samples,
       ignition_seed: params.optimizer_seed,
-      min_survival_rate: params.min_survival_rate,
       max_burn_rate: params.max_burn_rate,
       max_cut_rate: params.max_cut_rate,
     };

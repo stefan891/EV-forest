@@ -46,8 +46,7 @@ def _fitness_config_from_payload(payload: dict[str, Any], grid: np.ndarray) -> F
         w_survived=float(payload.get("w_survived", 1.0)),
         w_burned=float(payload.get("w_burned", 2.0)),
         w_cut=float(payload.get("w_cut", 0.5)),
-        min_survival_rate=float(payload.get("min_survival_rate", 0.85)),
-        max_burn_rate=float(payload.get("max_burn_rate", 0.05)),
+            max_burn_rate=float(payload.get("max_burn_rate", 0.10)),
         max_cut_rate=float(payload.get("max_cut_rate", 0.30)),
     )
 

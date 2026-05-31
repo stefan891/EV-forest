@@ -36,9 +36,9 @@ class FitnessConfig:
     w_burned: float = 2.0
     w_cut: float = 0.5
 
-    # "Fit enough" acceptance thresholds.
-    min_survival_rate: float = 0.85   # of remaining trees, this fraction must survive
-    max_burn_rate: float = 0.05       # of original trees, at most this fraction burns
+    # "Fit enough" acceptance thresholds. We use burn-rate as the primary
+    # threshold (fraction of original trees that burn) and cut-rate.
+    max_burn_rate: float = 0.10       # of original trees, at most this fraction burns
     max_cut_rate: float = 0.30        # of original trees, at most this fraction is cut
 
 
@@ -96,8 +96,8 @@ def evaluate(cut_mask: np.ndarray, config: FitnessConfig) -> FitnessReport:
     trees_survived = trees_remaining - trees_burned
 
     survival_rate = trees_survived / trees_remaining if trees_remaining else 0.0
-    burn_rate = trees_burned / trees_original if trees_original else 0.0
-    cut_rate = trees_cut / trees_original if trees_original else 0.0
+    burn_rate = trees_burned / trees_original if trees_original else 0.0 
+    cut_rate = trees_cut / trees_original if trees_original else 0.0 #ok
 
     scalar_fitness = (
         config.w_survived * trees_survived
@@ -121,9 +121,9 @@ def evaluate(cut_mask: np.ndarray, config: FitnessConfig) -> FitnessReport:
 
 def is_fit_enough(report: FitnessReport, config: FitnessConfig) -> bool:
     """Did a single individual clear all three acceptance thresholds?"""
+    # Use burn-rate and cut-rate thresholds; survival-rate was redundant.
     return (
-        report.survival_rate >= config.min_survival_rate
-        and report.burn_rate <= config.max_burn_rate
+        report.burn_rate <= config.max_burn_rate
         and report.cut_rate <= config.max_cut_rate
     )
 

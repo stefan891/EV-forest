@@ -42,12 +42,10 @@
   <section class="panel">
     <h2>Fitness thresholds <span class="muted">(is_fit_enough)</span></h2>
     <div class="row">
-      <label class="field"><span>Min survival</span>
-        <input type="number" step="0.05" min="0" max="1" bind:value={params.min_survival_rate} />
-      </label>
       <label class="field"><span>Max burn</span>
         <input type="number" step="0.01" min="0" max="1" bind:value={params.max_burn_rate} />
       </label>
+      
       <label class="field"><span>Max cut</span>
         <input type="number" step="0.05" min="0" max="1" bind:value={params.max_cut_rate} />
       </label>
