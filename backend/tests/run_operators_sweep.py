@@ -22,22 +22,25 @@ import time
 from concurrent.futures import ProcessPoolExecutor, as_completed
 from pathlib import Path
 
+import numpy as np
+
 from ev_forest.fitness import FitnessConfig, is_fit_enough
 from ev_forest.forest import make_forest
 from ev_forest.ga import run_ga
+from ev_forest.ignition import expected_burn
 from ev_forest.nsga2 import run_nsga2
 
 RESULTS_FILE = Path(__file__).parent / "operators_sweep.json"
 
-PROBLEM = {"dim": 60, "pct": 70}
-GA_POP, GA_GEN = 60, 50
-NSGA2_POP, NSGA2_GEN = 60, 40
+PROBLEM = {"dim": 20, "pct": 70} # 60, 70
+GA_POP, GA_GEN = 50, 50 # 100, 50
+NSGA2_POP, NSGA2_GEN = 100, 40 
 SEED = 0
-MAX_WORKERS = 6
+MAX_WORKERS = 2
 
 MUTATION_RATES = [0.005, 0.01, 0.05]
 CROSSOVER_RATES = [0.5, 0.7, 0.9]
-TOURNAMENT_SIZES = [2, 3, 5]
+TOURNAMENT_SIZES = [2, 5]
 
 
 def _build_config() -> FitnessConfig:
@@ -53,19 +56,41 @@ def _build_config() -> FitnessConfig:
     )
 
 
-def _ga_run(config: FitnessConfig, mut: float, xover: float, tour: int) -> dict:
-    t0 = time.time()
-    result = run_ga(
-        config,
-        population_size=GA_POP, max_generations=GA_GEN,
-        mutation_rate=mut, crossover_rate=xover, tournament_size=tour,
+def _worst_case_burned(cut_mask: np.ndarray, config: FitnessConfig) -> int:
+    """Apply cut_mask to forest and run worst-case fire, return burned tree count."""
+    grid = config.forest_grid
+    effective_cut = ((grid == 1) & (cut_mask.astype(np.int8) == 1)).astype(np.int8)
+    remaining_grid = (grid & (1 - effective_cut)).astype(np.int8)
+    
+    # Run worst-case fire on the remaining forest
+    result = expected_burn(
+        remaining_grid,
+        strategy="worst_case",
+        samples=1,  # Not used for worst_case strategy
         seed=SEED,
     )
-    return {
+    return int(result.burned)
+
+
+def _ga_run(config: FitnessConfig, mut: float, xover: float, tour: int | None = None, selection_strategy: str = "tournament") -> dict:
+    t0 = time.time()
+    kwargs = {
+        "config": config,
+        "population_size": GA_POP,
+        "max_generations": GA_GEN,
+        "mutation_rate": mut,
+        "crossover_rate": xover,
+        "selection_strategy": selection_strategy,
+        "seed": SEED,
+    }
+    if tour is not None:
+        kwargs["tournament_size"] = tour
+    result = run_ga(**kwargs)
+    worst_burned = _worst_case_burned(result.best_individual, config)
+    run_data = {
         "seed": SEED,
         "mutation_rate": mut,
         "crossover_rate": xover,
-        "tournament_size": tour,
         "population_size": GA_POP,
         "max_generations": GA_GEN,
         "stopped_reason": result.stopped_reason,
@@ -73,7 +98,11 @@ def _ga_run(config: FitnessConfig, mut: float, xover: float, tour: int) -> dict:
         "runtime_seconds": round(time.time() - t0, 2),
         "is_fit_enough": is_fit_enough(result.best_report, config),
         "best_report": result.best_report.as_dict(),
+        "worst_case_burned": worst_burned,
     }
+    if tour is not None:
+        run_data["tournament_size"] = tour
+    return run_data
 
 
 def _nsga2_run(config: FitnessConfig, mut: float, xover: float) -> dict:
@@ -84,6 +113,16 @@ def _nsga2_run(config: FitnessConfig, mut: float, xover: float) -> dict:
         mutation_rate=mut, crossover_rate=xover,
         seed=SEED,
     )
+    pareto_summary = []
+    for individual, report in zip(result.pareto_front, result.pareto_reports):
+        worst_burned = _worst_case_burned(individual, config)
+        pareto_summary.append({
+            "trees_survived": report.trees_survived,
+            "trees_burned": report.trees_burned,
+            "trees_cut": report.trees_cut,
+            "worst_case_burned": worst_burned,
+        })
+    
     return {
         "seed": SEED,
         "mutation_rate": mut,
@@ -93,27 +132,24 @@ def _nsga2_run(config: FitnessConfig, mut: float, xover: float) -> dict:
         "generations_run": result.generations_run,
         "runtime_seconds": round(time.time() - t0, 2),
         "pareto_front_size": len(result.pareto_front),
-        "pareto_summary": [
-            {"trees_survived": r.trees_survived,
-             "trees_burned": r.trees_burned,
-             "trees_cut": r.trees_cut}
-            for r in result.pareto_reports
-        ],
+        "pareto_summary": pareto_summary,
     }
 
 
 def _execute(args: tuple) -> tuple:
-    """Worker entry point. `tour` is None for NSGA-II."""
-    alg, mut, xover, tour, config = args
+    """Worker entry point. `tour` is None for rank-based or NSGA-II."""
+    alg, mut, xover, tour, selection_strategy, config = args
     if alg == "ga":
-        run = _ga_run(config, mut, xover, tour)
+        run = _ga_run(config, mut, xover, tour, selection_strategy)
     else:
         run = _nsga2_run(config, mut, xover)
-    return (alg, mut, xover, tour), run
+    return (alg, mut, xover, tour, selection_strategy), run
 
 
-def _make_key(alg: str, mut: float, xover: float, tour: int | None) -> str:
+def _make_key(alg: str, mut: float, xover: float, tour: int | None, selection_strategy: str = "tournament") -> str:
     if alg == "ga":
+        if selection_strategy == "rank_based":
+            return f"ga-mut{mut}-xover{xover}-rank"
         return f"ga-mut{mut}-xover{xover}-tour{tour}"
     return f"nsga2-mut{mut}-xover{xover}"
 
@@ -123,9 +159,13 @@ def main() -> None:
     tasks: list[tuple] = []
     for mut in MUTATION_RATES:
         for xover in CROSSOVER_RATES:
+            # Tournament-based GA
             for tour in TOURNAMENT_SIZES:
-                tasks.append(("ga", mut, xover, tour, config))
-            tasks.append(("nsga2", mut, xover, None, config))
+                tasks.append(("ga", mut, xover, tour, "tournament", config))
+            # Rank-based GA
+            tasks.append(("ga", mut, xover, None, "rank_based", config))
+            # NSGA-II
+            tasks.append(("nsga2", mut, xover, None, "tournament", config))
 
     total = len(tasks)
     results: dict[str, dict] = {
@@ -150,11 +190,11 @@ def main() -> None:
     with ProcessPoolExecutor(max_workers=MAX_WORKERS) as pool:
         futures = {pool.submit(_execute, t): t for t in tasks}
         for fut in as_completed(futures):
-            (alg, mut, xover, tour), run = fut.result()
+            (alg, mut, xover, tour, selection_strategy), run = fut.result()
             done += 1
-            key = _make_key(alg, mut, xover, tour)
+            key = _make_key(alg, mut, xover, tour, selection_strategy)
             print(f"[{done}/{total}] {key} done in {run['runtime_seconds']}s", flush=True)
-            cfg = {"algorithm": alg, "mutation_rate": mut, "crossover_rate": xover}
+            cfg = {"algorithm": alg, "mutation_rate": mut, "crossover_rate": xover, "selection_strategy": selection_strategy}
             if tour is not None:
                 cfg["tournament_size"] = tour
             results[key] = {"config": cfg, "run": run}

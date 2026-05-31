@@ -23,7 +23,7 @@ from .fitness import FitnessConfig, evaluate
 from .forest import make_forest, serialize
 from .ga import run_ga, run_ga_patch
 from .heatmap import HeatmapConfig, make_heatmap, serialize_heatmap
-from .ignition import Strategy
+from .ignition import Strategy, expected_burn
 from .nsga2 import run_nsga2, run_nsga2_patch
 from .simulator import simulate_fire
 
@@ -68,6 +68,22 @@ def _fitness_config_from_payload(payload: dict[str, Any], grid: np.ndarray) -> F
             max_burn_rate=float(payload.get("max_burn_rate", 0.10)),
         max_cut_rate=float(payload.get("max_cut_rate", 0.30)),
     )
+
+
+def _worst_case_burned(cut_mask: np.ndarray, config: FitnessConfig) -> int:
+    """Apply cut_mask to forest and run worst-case fire, return burned tree count."""
+    grid = config.forest_grid
+    effective_cut = ((grid == 1) & (cut_mask.astype(np.int8) == 1)).astype(np.int8)
+    remaining_grid = (grid & (1 - effective_cut)).astype(np.int8)
+    
+    # Run worst-case fire on the remaining forest
+    result = expected_burn(
+        remaining_grid,
+        strategy="worst_case",
+        samples=1,  # Not used for worst_case strategy
+        seed=0,
+    )
+    return int(result.burned)
 
 
 def create_app() -> Flask:
@@ -169,9 +185,11 @@ def create_app() -> Flask:
             **(dict(patch_size=patch_size) if use_patch else {}),
         )
         baseline = evaluate(np.zeros_like(grid), config)
+        worst_burned = _worst_case_burned(result.best_individual, config)
         return jsonify({
             "best_cut_mask": serialize(result.best_individual),
             "best_report": result.best_report.as_dict(),
+            "worst_case_burned": worst_burned,
             "baseline": baseline.as_dict(),
             "stopped_reason": result.stopped_reason,
             "generations_run": result.generations_run,
@@ -208,14 +226,16 @@ def create_app() -> Flask:
             **(dict(patch_size=patch_size) if use_patch else {}),
         )
         baseline = evaluate(np.zeros_like(grid), config)
+        pareto_front_data = []
+        for mask, report in zip(result.pareto_front, result.pareto_reports):
+            worst_burned = _worst_case_burned(mask, config)
+            pareto_front_data.append({
+                "cut_mask": serialize(mask),
+                "report": report.as_dict(),
+                "worst_case_burned": worst_burned,
+            })
         return jsonify({
-            "pareto_front": [
-                {
-                    "cut_mask": serialize(mask),
-                    "report": report.as_dict(),
-                }
-                for mask, report in zip(result.pareto_front, result.pareto_reports)
-            ],
+            "pareto_front": pareto_front_data,
             "population": [r.as_dict() for r in result.population_reports],
             "baseline": baseline.as_dict(),
             "generations_run": result.generations_run,

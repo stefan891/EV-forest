@@ -356,6 +356,7 @@
             <div><span class="muted">scalar fitness:</span> {gaResult.best_report.scalar_fitness.toFixed(2)}</div>
             <div><span class="muted">survived:</span> {gaResult.best_report.trees_survived} / {gaResult.best_report.trees_original}</div>
             <div><span class="muted">burned:</span> {gaResult.best_report.trees_burned}</div>
+            <div><span class="muted">worst-case burned:</span> {gaResult.worst_case_burned}</div>
             <div><span class="muted">cut:</span> {gaResult.best_report.trees_cut}</div>
           </div>
           {#if gaResult.baseline}
@@ -381,9 +382,11 @@
           <p class="muted">Click a point to view that cut-mask on the grid.</p>
           {#if selectedFrontIdx >= 0}
             {@const rep = nsgaResult.pareto_front[selectedFrontIdx].report}
+            {@const worstBurned = nsgaResult.pareto_front[selectedFrontIdx].worst_case_burned}
             <div class="kv">
               <div><span class="muted">survived:</span> {rep.trees_survived} / {rep.trees_original}</div>
               <div><span class="muted">burned:</span> {rep.trees_burned}</div>
+              <div><span class="muted">worst-case burned:</span> {worstBurned}</div>
               <div><span class="muted">cut:</span> {rep.trees_cut} ({(rep.cut_rate * 100).toFixed(1)}%)</div>
             </div>
           {/if}

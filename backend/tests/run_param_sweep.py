@@ -27,7 +27,7 @@ from ev_forest.nsga2 import run_nsga2
 
 RESULTS_FILE = Path(__file__).parent / "param_sweep.json"
 
-PROBLEM = {"dim": 60, "pct": 70}
+PROBLEM = {"dim": 50, "pct": 70}
 ALGORITHMS = ["ga", "nsga2"]
 POPULATIONS = [20, 60, 120]
 GENERATIONS = [20, 50, 100]

@@ -1,283 +1,52 @@
 {
   "_problem": {
-    "rows": 60,
-    "cols": 60,
+    "rows": 20,
+    "cols": 20,
     "layout": "random",
     "density": 0.7,
     "ignition_strategy": "random",
     "ignition_samples": 8,
     "seed": 0,
-    "ga_population": 60,
+    "ga_population": 50,
     "ga_generations": 50,
-    "nsga2_population": 60,
+    "nsga2_population": 100,
     "nsga2_generations": 40
-  },
-  "nsga2-mut0.005-xover0.5": {
-    "config": {
-      "algorithm": "nsga2",
-      "mutation_rate": 0.005,
-      "crossover_rate": 0.5
-    },
-    "run": {
-      "seed": 0,
-      "mutation_rate": 0.005,
-      "crossover_rate": 0.5,
-      "population_size": 60,
-      "max_generations": 40,
-      "generations_run": 40,
-      "runtime_seconds": 9.52,
-      "pareto_front_size": 4,
-      "pareto_summary": [
-        {
-          "trees_survived": 1407,
-          "trees_burned": 9,
-          "trees_cut": 1103
-        },
-        {
-          "trees_survived": 1407,
-          "trees_burned": 9,
-          "trees_cut": 1103
-        },
-        {
-          "trees_survived": 1423,
-          "trees_burned": 16,
-          "trees_cut": 1080
-        },
-        {
-          "trees_survived": 1426,
-          "trees_burned": 25,
-          "trees_cut": 1068
-        }
-      ]
-    }
-  },
-  "ga-mut0.005-xover0.5-tour3": {
-    "config": {
-      "algorithm": "ga",
-      "mutation_rate": 0.005,
-      "crossover_rate": 0.5,
-      "tournament_size": 3
-    },
-    "run": {
-      "seed": 0,
-      "mutation_rate": 0.005,
-      "crossover_rate": 0.5,
-      "tournament_size": 3,
-      "population_size": 60,
-      "max_generations": 50,
-      "stopped_reason": "max_generations",
-      "generations_run": 50,
-      "runtime_seconds": 67.42,
-      "is_fit_enough": false,
-      "best_report": {
-        "trees_original": 2519,
-        "trees_cut": 568,
-        "trees_remaining": 1951,
-        "trees_burned": 640,
-        "trees_survived": 1311,
-        "survival_rate": 0.671963095848283,
-        "burn_rate": 0.2540690750297737,
-        "cut_rate": 0.22548630408892417,
-        "scalar_fitness": -253.0,
-        "objectives": [
-          1311.0,
-          -640.0
-        ]
-      }
-    }
   },
   "ga-mut0.005-xover0.5-tour5": {
     "config": {
       "algorithm": "ga",
       "mutation_rate": 0.005,
       "crossover_rate": 0.5,
+      "selection_strategy": "tournament",
       "tournament_size": 5
     },
     "run": {
       "seed": 0,
       "mutation_rate": 0.005,
       "crossover_rate": 0.5,
-      "tournament_size": 5,
-      "population_size": 60,
+      "population_size": 50,
       "max_generations": 50,
-      "stopped_reason": "max_generations",
-      "generations_run": 50,
-      "runtime_seconds": 68.99,
-      "is_fit_enough": false,
+      "stopped_reason": "fit_enough",
+      "generations_run": 29,
+      "runtime_seconds": 2.65,
+      "is_fit_enough": true,
       "best_report": {
-        "trees_original": 2519,
-        "trees_cut": 646,
-        "trees_remaining": 1873,
-        "trees_burned": 609,
-        "trees_survived": 1264,
-        "survival_rate": 0.6748531767218366,
-        "burn_rate": 0.24176260420801907,
-        "cut_rate": 0.25645097260817784,
-        "scalar_fitness": -277.0,
+        "trees_original": 257,
+        "trees_cut": 77,
+        "trees_remaining": 180,
+        "trees_burned": 24,
+        "trees_survived": 156,
+        "survival_rate": 0.8666666666666667,
+        "burn_rate": 0.0933852140077821,
+        "cut_rate": 0.29961089494163423,
+        "scalar_fitness": 54.1,
         "objectives": [
-          1264.0,
-          -609.0
+          156.0,
+          -24.0
         ]
-      }
-    }
-  },
-  "nsga2-mut0.005-xover0.7": {
-    "config": {
-      "algorithm": "nsga2",
-      "mutation_rate": 0.005,
-      "crossover_rate": 0.7
-    },
-    "run": {
-      "seed": 0,
-      "mutation_rate": 0.005,
-      "crossover_rate": 0.7,
-      "population_size": 60,
-      "max_generations": 40,
-      "generations_run": 40,
-      "runtime_seconds": 9.56,
-      "pareto_front_size": 7,
-      "pareto_summary": [
-        {
-          "trees_survived": 1442,
-          "trees_burned": 7,
-          "trees_cut": 1070
-        },
-        {
-          "trees_survived": 1447,
-          "trees_burned": 10,
-          "trees_cut": 1062
-        },
-        {
-          "trees_survived": 1454,
-          "trees_burned": 11,
-          "trees_cut": 1054
-        },
-        {
-          "trees_survived": 1456,
-          "trees_burned": 12,
-          "trees_cut": 1051
-        },
-        {
-          "trees_survived": 1457,
-          "trees_burned": 13,
-          "trees_cut": 1049
-        },
-        {
-          "trees_survived": 1458,
-          "trees_burned": 14,
-          "trees_cut": 1047
-        },
-        {
-          "trees_survived": 1466,
-          "trees_burned": 15,
-          "trees_cut": 1038
-        }
-      ]
-    }
-  },
-  "ga-mut0.005-xover0.7-tour5": {
-    "config": {
-      "algorithm": "ga",
-      "mutation_rate": 0.005,
-      "crossover_rate": 0.7,
+      },
+      "worst_case_burned": 44,
       "tournament_size": 5
-    },
-    "run": {
-      "seed": 0,
-      "mutation_rate": 0.005,
-      "crossover_rate": 0.7,
-      "tournament_size": 5,
-      "population_size": 60,
-      "max_generations": 50,
-      "stopped_reason": "max_generations",
-      "generations_run": 50,
-      "runtime_seconds": 67.8,
-      "is_fit_enough": false,
-      "best_report": {
-        "trees_original": 2519,
-        "trees_cut": 671,
-        "trees_remaining": 1848,
-        "trees_burned": 403,
-        "trees_survived": 1445,
-        "survival_rate": 0.7819264069264069,
-        "burn_rate": 0.15998412068281065,
-        "cut_rate": 0.2663755458515284,
-        "scalar_fitness": 303.5,
-        "objectives": [
-          1445.0,
-          -403.0
-        ]
-      }
-    }
-  },
-  "ga-mut0.005-xover0.7-tour3": {
-    "config": {
-      "algorithm": "ga",
-      "mutation_rate": 0.005,
-      "crossover_rate": 0.7,
-      "tournament_size": 3
-    },
-    "run": {
-      "seed": 0,
-      "mutation_rate": 0.005,
-      "crossover_rate": 0.7,
-      "tournament_size": 3,
-      "population_size": 60,
-      "max_generations": 50,
-      "stopped_reason": "max_generations",
-      "generations_run": 50,
-      "runtime_seconds": 80.52,
-      "is_fit_enough": false,
-      "best_report": {
-        "trees_original": 2519,
-        "trees_cut": 641,
-        "trees_remaining": 1878,
-        "trees_burned": 667,
-        "trees_survived": 1211,
-        "survival_rate": 0.6448349307774228,
-        "burn_rate": 0.2647876141325923,
-        "cut_rate": 0.2544660579595077,
-        "scalar_fitness": -443.5,
-        "objectives": [
-          1211.0,
-          -667.0
-        ]
-      }
-    }
-  },
-  "ga-mut0.005-xover0.7-tour2": {
-    "config": {
-      "algorithm": "ga",
-      "mutation_rate": 0.005,
-      "crossover_rate": 0.7,
-      "tournament_size": 2
-    },
-    "run": {
-      "seed": 0,
-      "mutation_rate": 0.005,
-      "crossover_rate": 0.7,
-      "tournament_size": 2,
-      "population_size": 60,
-      "max_generations": 50,
-      "stopped_reason": "max_generations",
-      "generations_run": 50,
-      "runtime_seconds": 81.57,
-      "is_fit_enough": false,
-      "best_report": {
-        "trees_original": 2519,
-        "trees_cut": 688,
-        "trees_remaining": 1831,
-        "trees_burned": 838,
-        "trees_survived": 993,
-        "survival_rate": 0.5423265974877116,
-        "burn_rate": 0.33267169511711,
-        "cut_rate": 0.27312425565700676,
-        "scalar_fitness": -1027.0,
-        "objectives": [
-          993.0,
-          -838.0
-        ]
-      }
     }
   },
   "ga-mut0.005-xover0.5-tour2": {
@@ -285,113 +54,262 @@
       "algorithm": "ga",
       "mutation_rate": 0.005,
       "crossover_rate": 0.5,
+      "selection_strategy": "tournament",
       "tournament_size": 2
     },
     "run": {
       "seed": 0,
       "mutation_rate": 0.005,
       "crossover_rate": 0.5,
-      "tournament_size": 2,
-      "population_size": 60,
+      "population_size": 50,
       "max_generations": 50,
       "stopped_reason": "max_generations",
       "generations_run": 50,
-      "runtime_seconds": 82.56,
+      "runtime_seconds": 4.6,
       "is_fit_enough": false,
       "best_report": {
-        "trees_original": 2519,
-        "trees_cut": 591,
-        "trees_remaining": 1928,
-        "trees_burned": 687,
-        "trees_survived": 1241,
-        "survival_rate": 0.6436721991701245,
-        "burn_rate": 0.2727272727272727,
-        "cut_rate": 0.23461691147280667,
-        "scalar_fitness": -428.5,
+        "trees_original": 257,
+        "trees_cut": 71,
+        "trees_remaining": 186,
+        "trees_burned": 34,
+        "trees_survived": 152,
+        "survival_rate": 0.8172043010752689,
+        "burn_rate": 0.13229571984435798,
+        "cut_rate": 0.27626459143968873,
+        "scalar_fitness": 34.300000000000004,
         "objectives": [
-          1241.0,
-          -687.0
+          152.0,
+          -34.0
         ]
-      }
+      },
+      "worst_case_burned": 57,
+      "tournament_size": 2
     }
   },
-  "nsga2-mut0.005-xover0.9": {
+  "nsga2-mut0.005-xover0.5": {
     "config": {
       "algorithm": "nsga2",
       "mutation_rate": 0.005,
-      "crossover_rate": 0.9
+      "crossover_rate": 0.5,
+      "selection_strategy": "tournament"
     },
     "run": {
       "seed": 0,
       "mutation_rate": 0.005,
-      "crossover_rate": 0.9,
-      "population_size": 60,
+      "crossover_rate": 0.5,
+      "population_size": 100,
       "max_generations": 40,
       "generations_run": 40,
-      "runtime_seconds": 14.14,
-      "pareto_front_size": 5,
+      "runtime_seconds": 3.08,
+      "pareto_front_size": 1,
       "pareto_summary": [
         {
-          "trees_survived": 1425,
-          "trees_burned": 9,
-          "trees_cut": 1085
-        },
-        {
-          "trees_survived": 1431,
-          "trees_burned": 11,
-          "trees_cut": 1077
-        },
-        {
-          "trees_survived": 1435,
-          "trees_burned": 12,
-          "trees_cut": 1072
-        },
-        {
-          "trees_survived": 1439,
-          "trees_burned": 17,
-          "trees_cut": 1063
-        },
-        {
-          "trees_survived": 1453,
-          "trees_burned": 21,
-          "trees_cut": 1045
+          "trees_survived": 161,
+          "trees_burned": 5,
+          "trees_cut": 91,
+          "worst_case_burned": 64
         }
       ]
     }
   },
-  "ga-mut0.01-xover0.5-tour3": {
+  "ga-mut0.005-xover0.5-rank": {
     "config": {
       "algorithm": "ga",
-      "mutation_rate": 0.01,
+      "mutation_rate": 0.005,
       "crossover_rate": 0.5,
-      "tournament_size": 3
+      "selection_strategy": "rank_based"
     },
     "run": {
       "seed": 0,
-      "mutation_rate": 0.01,
+      "mutation_rate": 0.005,
       "crossover_rate": 0.5,
-      "tournament_size": 3,
-      "population_size": 60,
+      "population_size": 50,
+      "max_generations": 50,
+      "stopped_reason": "fit_enough",
+      "generations_run": 46,
+      "runtime_seconds": 5.53,
+      "is_fit_enough": true,
+      "best_report": {
+        "trees_original": 257,
+        "trees_cut": 76,
+        "trees_remaining": 181,
+        "trees_burned": 20,
+        "trees_survived": 161,
+        "survival_rate": 0.8895027624309392,
+        "burn_rate": 0.07782101167315175,
+        "cut_rate": 0.29571984435797666,
+        "scalar_fitness": 67.80000000000001,
+        "objectives": [
+          161.0,
+          -20.0
+        ]
+      },
+      "worst_case_burned": 71
+    }
+  },
+  "ga-mut0.005-xover0.7-tour2": {
+    "config": {
+      "algorithm": "ga",
+      "mutation_rate": 0.005,
+      "crossover_rate": 0.7,
+      "selection_strategy": "tournament",
+      "tournament_size": 2
+    },
+    "run": {
+      "seed": 0,
+      "mutation_rate": 0.005,
+      "crossover_rate": 0.7,
+      "population_size": 50,
+      "max_generations": 50,
+      "stopped_reason": "fit_enough",
+      "generations_run": 41,
+      "runtime_seconds": 4.05,
+      "is_fit_enough": true,
+      "best_report": {
+        "trees_original": 257,
+        "trees_cut": 68,
+        "trees_remaining": 189,
+        "trees_burned": 20,
+        "trees_survived": 169,
+        "survival_rate": 0.8941798941798942,
+        "burn_rate": 0.07782101167315175,
+        "cut_rate": 0.26459143968871596,
+        "scalar_fitness": 81.4,
+        "objectives": [
+          169.0,
+          -20.0
+        ]
+      },
+      "worst_case_burned": 64,
+      "tournament_size": 2
+    }
+  },
+  "ga-mut0.005-xover0.7-tour5": {
+    "config": {
+      "algorithm": "ga",
+      "mutation_rate": 0.005,
+      "crossover_rate": 0.7,
+      "selection_strategy": "tournament",
+      "tournament_size": 5
+    },
+    "run": {
+      "seed": 0,
+      "mutation_rate": 0.005,
+      "crossover_rate": 0.7,
+      "population_size": 50,
       "max_generations": 50,
       "stopped_reason": "max_generations",
       "generations_run": 50,
-      "runtime_seconds": 73.97,
+      "runtime_seconds": 3.87,
       "is_fit_enough": false,
       "best_report": {
-        "trees_original": 2519,
-        "trees_cut": 877,
-        "trees_remaining": 1642,
-        "trees_burned": 32,
-        "trees_survived": 1610,
-        "survival_rate": 0.9805115712545676,
-        "burn_rate": 0.012703453751488685,
-        "cut_rate": 0.3481540293767368,
-        "scalar_fitness": 1107.5,
+        "trees_original": 257,
+        "trees_cut": 57,
+        "trees_remaining": 200,
+        "trees_burned": 26,
+        "trees_survived": 174,
+        "survival_rate": 0.87,
+        "burn_rate": 0.10116731517509728,
+        "cut_rate": 0.22178988326848248,
+        "scalar_fitness": 82.1,
         "objectives": [
-          1610.0,
-          -32.0
+          174.0,
+          -26.0
         ]
-      }
+      },
+      "worst_case_burned": 70,
+      "tournament_size": 5
+    }
+  },
+  "nsga2-mut0.005-xover0.7": {
+    "config": {
+      "algorithm": "nsga2",
+      "mutation_rate": 0.005,
+      "crossover_rate": 0.7,
+      "selection_strategy": "tournament"
+    },
+    "run": {
+      "seed": 0,
+      "mutation_rate": 0.005,
+      "crossover_rate": 0.7,
+      "population_size": 100,
+      "max_generations": 40,
+      "generations_run": 40,
+      "runtime_seconds": 4.07,
+      "pareto_front_size": 6,
+      "pareto_summary": [
+        {
+          "trees_survived": 150,
+          "trees_burned": 6,
+          "trees_cut": 101,
+          "worst_case_burned": 27
+        },
+        {
+          "trees_survived": 151,
+          "trees_burned": 11,
+          "trees_cut": 95,
+          "worst_case_burned": 28
+        },
+        {
+          "trees_survived": 153,
+          "trees_burned": 14,
+          "trees_cut": 90,
+          "worst_case_burned": 25
+        },
+        {
+          "trees_survived": 153,
+          "trees_burned": 14,
+          "trees_cut": 90,
+          "worst_case_burned": 25
+        },
+        {
+          "trees_survived": 159,
+          "trees_burned": 15,
+          "trees_cut": 83,
+          "worst_case_burned": 28
+        },
+        {
+          "trees_survived": 160,
+          "trees_burned": 16,
+          "trees_cut": 81,
+          "worst_case_burned": 28
+        }
+      ]
+    }
+  },
+  "ga-mut0.005-xover0.7-rank": {
+    "config": {
+      "algorithm": "ga",
+      "mutation_rate": 0.005,
+      "crossover_rate": 0.7,
+      "selection_strategy": "rank_based"
+    },
+    "run": {
+      "seed": 0,
+      "mutation_rate": 0.005,
+      "crossover_rate": 0.7,
+      "population_size": 50,
+      "max_generations": 50,
+      "stopped_reason": "max_generations",
+      "generations_run": 50,
+      "runtime_seconds": 6.57,
+      "is_fit_enough": false,
+      "best_report": {
+        "trees_original": 257,
+        "trees_cut": 86,
+        "trees_remaining": 171,
+        "trees_burned": 31,
+        "trees_survived": 140,
+        "survival_rate": 0.8187134502923976,
+        "burn_rate": 0.12062256809338522,
+        "cut_rate": 0.3346303501945525,
+        "scalar_fitness": 17.800000000000004,
+        "objectives": [
+          140.0,
+          -31.0
+        ]
+      },
+      "worst_case_burned": 37
     }
   },
   "ga-mut0.005-xover0.9-tour5": {
@@ -399,34 +317,36 @@
       "algorithm": "ga",
       "mutation_rate": 0.005,
       "crossover_rate": 0.9,
+      "selection_strategy": "tournament",
       "tournament_size": 5
     },
     "run": {
       "seed": 0,
       "mutation_rate": 0.005,
       "crossover_rate": 0.9,
-      "tournament_size": 5,
-      "population_size": 60,
+      "population_size": 50,
       "max_generations": 50,
-      "stopped_reason": "max_generations",
-      "generations_run": 50,
-      "runtime_seconds": 83.63,
-      "is_fit_enough": false,
+      "stopped_reason": "fit_enough",
+      "generations_run": 19,
+      "runtime_seconds": 2.47,
+      "is_fit_enough": true,
       "best_report": {
-        "trees_original": 2519,
-        "trees_cut": 614,
-        "trees_remaining": 1905,
-        "trees_burned": 664,
-        "trees_survived": 1241,
-        "survival_rate": 0.6514435695538058,
-        "burn_rate": 0.2635966653433902,
-        "cut_rate": 0.24374751885668916,
-        "scalar_fitness": -394.0,
+        "trees_original": 257,
+        "trees_cut": 66,
+        "trees_remaining": 191,
+        "trees_burned": 23,
+        "trees_survived": 168,
+        "survival_rate": 0.8795811518324608,
+        "burn_rate": 0.08949416342412451,
+        "cut_rate": 0.25680933852140075,
+        "scalar_fitness": 75.80000000000001,
         "objectives": [
-          1241.0,
-          -664.0
+          168.0,
+          -23.0
         ]
-      }
+      },
+      "worst_case_burned": 79,
+      "tournament_size": 5
     }
   },
   "ga-mut0.005-xover0.9-tour2": {
@@ -434,69 +354,145 @@
       "algorithm": "ga",
       "mutation_rate": 0.005,
       "crossover_rate": 0.9,
+      "selection_strategy": "tournament",
       "tournament_size": 2
     },
     "run": {
       "seed": 0,
       "mutation_rate": 0.005,
       "crossover_rate": 0.9,
-      "tournament_size": 2,
-      "population_size": 60,
+      "population_size": 50,
       "max_generations": 50,
-      "stopped_reason": "max_generations",
-      "generations_run": 50,
-      "runtime_seconds": 93.59,
-      "is_fit_enough": false,
+      "stopped_reason": "fit_enough",
+      "generations_run": 45,
+      "runtime_seconds": 5.06,
+      "is_fit_enough": true,
       "best_report": {
-        "trees_original": 2519,
-        "trees_cut": 662,
-        "trees_remaining": 1857,
-        "trees_burned": 647,
-        "trees_survived": 1210,
-        "survival_rate": 0.6515885837372105,
-        "burn_rate": 0.25684795553791184,
-        "cut_rate": 0.2628026994839222,
-        "scalar_fitness": -415.0,
+        "trees_original": 257,
+        "trees_cut": 74,
+        "trees_remaining": 183,
+        "trees_burned": 20,
+        "trees_survived": 163,
+        "survival_rate": 0.8907103825136612,
+        "burn_rate": 0.07782101167315175,
+        "cut_rate": 0.28793774319066145,
+        "scalar_fitness": 71.2,
         "objectives": [
-          1210.0,
-          -647.0
+          163.0,
+          -20.0
         ]
-      }
+      },
+      "worst_case_burned": 61,
+      "tournament_size": 2
     }
   },
-  "ga-mut0.01-xover0.5-tour5": {
+  "nsga2-mut0.005-xover0.9": {
     "config": {
-      "algorithm": "ga",
-      "mutation_rate": 0.01,
-      "crossover_rate": 0.5,
-      "tournament_size": 5
+      "algorithm": "nsga2",
+      "mutation_rate": 0.005,
+      "crossover_rate": 0.9,
+      "selection_strategy": "tournament"
     },
     "run": {
       "seed": 0,
-      "mutation_rate": 0.01,
-      "crossover_rate": 0.5,
-      "tournament_size": 5,
-      "population_size": 60,
+      "mutation_rate": 0.005,
+      "crossover_rate": 0.9,
+      "population_size": 100,
+      "max_generations": 40,
+      "generations_run": 40,
+      "runtime_seconds": 3.58,
+      "pareto_front_size": 9,
+      "pareto_summary": [
+        {
+          "trees_survived": 147,
+          "trees_burned": 6,
+          "trees_cut": 104,
+          "worst_case_burned": 34
+        },
+        {
+          "trees_survived": 154,
+          "trees_burned": 7,
+          "trees_cut": 96,
+          "worst_case_burned": 46
+        },
+        {
+          "trees_survived": 154,
+          "trees_burned": 7,
+          "trees_cut": 96,
+          "worst_case_burned": 28
+        },
+        {
+          "trees_survived": 156,
+          "trees_burned": 9,
+          "trees_cut": 92,
+          "worst_case_burned": 25
+        },
+        {
+          "trees_survived": 159,
+          "trees_burned": 10,
+          "trees_cut": 88,
+          "worst_case_burned": 24
+        },
+        {
+          "trees_survived": 159,
+          "trees_burned": 10,
+          "trees_cut": 88,
+          "worst_case_burned": 31
+        },
+        {
+          "trees_survived": 159,
+          "trees_burned": 10,
+          "trees_cut": 88,
+          "worst_case_burned": 31
+        },
+        {
+          "trees_survived": 160,
+          "trees_burned": 11,
+          "trees_cut": 86,
+          "worst_case_burned": 31
+        },
+        {
+          "trees_survived": 162,
+          "trees_burned": 15,
+          "trees_cut": 80,
+          "worst_case_burned": 34
+        }
+      ]
+    }
+  },
+  "ga-mut0.005-xover0.9-rank": {
+    "config": {
+      "algorithm": "ga",
+      "mutation_rate": 0.005,
+      "crossover_rate": 0.9,
+      "selection_strategy": "rank_based"
+    },
+    "run": {
+      "seed": 0,
+      "mutation_rate": 0.005,
+      "crossover_rate": 0.9,
+      "population_size": 50,
       "max_generations": 50,
       "stopped_reason": "max_generations",
       "generations_run": 50,
-      "runtime_seconds": 68.27,
+      "runtime_seconds": 6.37,
       "is_fit_enough": false,
       "best_report": {
-        "trees_original": 2519,
-        "trees_cut": 896,
-        "trees_remaining": 1623,
-        "trees_burned": 94,
-        "trees_survived": 1529,
-        "survival_rate": 0.9420825631546519,
-        "burn_rate": 0.037316395394998016,
-        "cut_rate": 0.3556967050416832,
-        "scalar_fitness": 893.0,
+        "trees_original": 257,
+        "trees_cut": 70,
+        "trees_remaining": 187,
+        "trees_burned": 27,
+        "trees_survived": 160,
+        "survival_rate": 0.8556149732620321,
+        "burn_rate": 0.10505836575875487,
+        "cut_rate": 0.2723735408560311,
+        "scalar_fitness": 57.0,
         "objectives": [
-          1529.0,
-          -94.0
+          160.0,
+          -27.0
         ]
-      }
+      },
+      "worst_case_burned": 94
     }
   },
   "ga-mut0.01-xover0.5-tour2": {
@@ -504,257 +500,176 @@
       "algorithm": "ga",
       "mutation_rate": 0.01,
       "crossover_rate": 0.5,
+      "selection_strategy": "tournament",
       "tournament_size": 2
     },
     "run": {
       "seed": 0,
       "mutation_rate": 0.01,
       "crossover_rate": 0.5,
-      "tournament_size": 2,
-      "population_size": 60,
+      "population_size": 50,
       "max_generations": 50,
-      "stopped_reason": "max_generations",
-      "generations_run": 50,
-      "runtime_seconds": 82.13,
-      "is_fit_enough": false,
+      "stopped_reason": "fit_enough",
+      "generations_run": 32,
+      "runtime_seconds": 3.81,
+      "is_fit_enough": true,
       "best_report": {
-        "trees_original": 2519,
-        "trees_cut": 821,
-        "trees_remaining": 1698,
-        "trees_burned": 57,
-        "trees_survived": 1641,
-        "survival_rate": 0.9664310954063604,
-        "burn_rate": 0.02262802699483922,
-        "cut_rate": 0.3259229853116316,
-        "scalar_fitness": 1116.5,
+        "trees_original": 257,
+        "trees_cut": 76,
+        "trees_remaining": 181,
+        "trees_burned": 22,
+        "trees_survived": 159,
+        "survival_rate": 0.8784530386740331,
+        "burn_rate": 0.08560311284046693,
+        "cut_rate": 0.29571984435797666,
+        "scalar_fitness": 61.800000000000004,
         "objectives": [
-          1641.0,
-          -57.0
+          159.0,
+          -22.0
         ]
-      }
+      },
+      "worst_case_burned": 41,
+      "tournament_size": 2
+    }
+  },
+  "ga-mut0.01-xover0.5-tour5": {
+    "config": {
+      "algorithm": "ga",
+      "mutation_rate": 0.01,
+      "crossover_rate": 0.5,
+      "selection_strategy": "tournament",
+      "tournament_size": 5
+    },
+    "run": {
+      "seed": 0,
+      "mutation_rate": 0.01,
+      "crossover_rate": 0.5,
+      "population_size": 50,
+      "max_generations": 50,
+      "stopped_reason": "fit_enough",
+      "generations_run": 35,
+      "runtime_seconds": 2.67,
+      "is_fit_enough": true,
+      "best_report": {
+        "trees_original": 257,
+        "trees_cut": 64,
+        "trees_remaining": 193,
+        "trees_burned": 25,
+        "trees_survived": 168,
+        "survival_rate": 0.8704663212435233,
+        "burn_rate": 0.09727626459143969,
+        "cut_rate": 0.2490272373540856,
+        "scalar_fitness": 73.2,
+        "objectives": [
+          168.0,
+          -25.0
+        ]
+      },
+      "worst_case_burned": 88,
+      "tournament_size": 5
     }
   },
   "nsga2-mut0.01-xover0.5": {
     "config": {
       "algorithm": "nsga2",
       "mutation_rate": 0.01,
-      "crossover_rate": 0.5
+      "crossover_rate": 0.5,
+      "selection_strategy": "tournament"
     },
     "run": {
       "seed": 0,
       "mutation_rate": 0.01,
       "crossover_rate": 0.5,
-      "population_size": 60,
+      "population_size": 100,
       "max_generations": 40,
       "generations_run": 40,
-      "runtime_seconds": 12.1,
-      "pareto_front_size": 5,
+      "runtime_seconds": 3.24,
+      "pareto_front_size": 8,
       "pareto_summary": [
         {
-          "trees_survived": 1386,
-          "trees_burned": 8,
-          "trees_cut": 1125
+          "trees_survived": 123,
+          "trees_burned": 3,
+          "trees_cut": 131,
+          "worst_case_burned": 23
         },
         {
-          "trees_survived": 1396,
-          "trees_burned": 10,
-          "trees_cut": 1113
+          "trees_survived": 129,
+          "trees_burned": 4,
+          "trees_cut": 124,
+          "worst_case_burned": 23
         },
         {
-          "trees_survived": 1418,
-          "trees_burned": 21,
-          "trees_cut": 1080
+          "trees_survived": 129,
+          "trees_burned": 4,
+          "trees_cut": 124,
+          "worst_case_burned": 22
         },
         {
-          "trees_survived": 1418,
-          "trees_burned": 21,
-          "trees_cut": 1080
+          "trees_survived": 131,
+          "trees_burned": 6,
+          "trees_cut": 120,
+          "worst_case_burned": 16
         },
         {
-          "trees_survived": 1428,
-          "trees_burned": 24,
-          "trees_cut": 1067
-        }
-      ]
-    }
-  },
-  "ga-mut0.005-xover0.9-tour3": {
-    "config": {
-      "algorithm": "ga",
-      "mutation_rate": 0.005,
-      "crossover_rate": 0.9,
-      "tournament_size": 3
-    },
-    "run": {
-      "seed": 0,
-      "mutation_rate": 0.005,
-      "crossover_rate": 0.9,
-      "tournament_size": 3,
-      "population_size": 60,
-      "max_generations": 50,
-      "stopped_reason": "max_generations",
-      "generations_run": 50,
-      "runtime_seconds": 91.82,
-      "is_fit_enough": false,
-      "best_report": {
-        "trees_original": 2519,
-        "trees_cut": 714,
-        "trees_remaining": 1805,
-        "trees_burned": 619,
-        "trees_survived": 1186,
-        "survival_rate": 0.6570637119113574,
-        "burn_rate": 0.24573243350535928,
-        "cut_rate": 0.2834458118300913,
-        "scalar_fitness": -409.0,
-        "objectives": [
-          1186.0,
-          -619.0
-        ]
-      }
-    }
-  },
-  "nsga2-mut0.01-xover0.7": {
-    "config": {
-      "algorithm": "nsga2",
-      "mutation_rate": 0.01,
-      "crossover_rate": 0.7
-    },
-    "run": {
-      "seed": 0,
-      "mutation_rate": 0.01,
-      "crossover_rate": 0.7,
-      "population_size": 60,
-      "max_generations": 40,
-      "generations_run": 40,
-      "runtime_seconds": 11.54,
-      "pareto_front_size": 4,
-      "pareto_summary": [
+          "trees_survived": 131,
+          "trees_burned": 6,
+          "trees_cut": 120,
+          "worst_case_burned": 16
+        },
         {
-          "trees_survived": 1391,
+          "trees_survived": 131,
+          "trees_burned": 6,
+          "trees_cut": 120,
+          "worst_case_burned": 26
+        },
+        {
+          "trees_survived": 139,
+          "trees_burned": 7,
+          "trees_cut": 111,
+          "worst_case_burned": 30
+        },
+        {
+          "trees_survived": 145,
           "trees_burned": 9,
-          "trees_cut": 1119
-        },
-        {
-          "trees_survived": 1398,
-          "trees_burned": 14,
-          "trees_cut": 1107
-        },
-        {
-          "trees_survived": 1423,
-          "trees_burned": 20,
-          "trees_cut": 1076
-        },
-        {
-          "trees_survived": 1424,
-          "trees_burned": 33,
-          "trees_cut": 1062
+          "trees_cut": 103,
+          "worst_case_burned": 38
         }
       ]
     }
   },
-  "ga-mut0.01-xover0.7-tour3": {
+  "ga-mut0.01-xover0.5-rank": {
     "config": {
       "algorithm": "ga",
       "mutation_rate": 0.01,
-      "crossover_rate": 0.7,
-      "tournament_size": 3
+      "crossover_rate": 0.5,
+      "selection_strategy": "rank_based"
     },
     "run": {
       "seed": 0,
       "mutation_rate": 0.01,
-      "crossover_rate": 0.7,
-      "tournament_size": 3,
-      "population_size": 60,
+      "crossover_rate": 0.5,
+      "population_size": 50,
       "max_generations": 50,
       "stopped_reason": "max_generations",
       "generations_run": 50,
-      "runtime_seconds": 80.52,
+      "runtime_seconds": 4.98,
       "is_fit_enough": false,
       "best_report": {
-        "trees_original": 2519,
-        "trees_cut": 870,
-        "trees_remaining": 1649,
-        "trees_burned": 152,
-        "trees_survived": 1497,
-        "survival_rate": 0.9078229229836264,
-        "burn_rate": 0.06034140531957126,
-        "cut_rate": 0.34537514886859866,
-        "scalar_fitness": 758.0,
+        "trees_original": 257,
+        "trees_cut": 73,
+        "trees_remaining": 184,
+        "trees_burned": 29,
+        "trees_survived": 155,
+        "survival_rate": 0.842391304347826,
+        "burn_rate": 0.11284046692607004,
+        "cut_rate": 0.2840466926070039,
+        "scalar_fitness": 45.900000000000006,
         "objectives": [
-          1497.0,
-          -152.0
+          155.0,
+          -29.0
         ]
-      }
-    }
-  },
-  "ga-mut0.01-xover0.9-tour3": {
-    "config": {
-      "algorithm": "ga",
-      "mutation_rate": 0.01,
-      "crossover_rate": 0.9,
-      "tournament_size": 3
-    },
-    "run": {
-      "seed": 0,
-      "mutation_rate": 0.01,
-      "crossover_rate": 0.9,
-      "tournament_size": 3,
-      "population_size": 60,
-      "max_generations": 50,
-      "stopped_reason": "max_generations",
-      "generations_run": 50,
-      "runtime_seconds": 74.5,
-      "is_fit_enough": false,
-      "best_report": {
-        "trees_original": 2519,
-        "trees_cut": 927,
-        "trees_remaining": 1592,
-        "trees_burned": 51,
-        "trees_survived": 1541,
-        "survival_rate": 0.967964824120603,
-        "burn_rate": 0.020246129416435093,
-        "cut_rate": 0.3680031758634379,
-        "scalar_fitness": 975.5,
-        "objectives": [
-          1541.0,
-          -51.0
-        ]
-      }
-    }
-  },
-  "ga-mut0.01-xover0.7-tour5": {
-    "config": {
-      "algorithm": "ga",
-      "mutation_rate": 0.01,
-      "crossover_rate": 0.7,
-      "tournament_size": 5
-    },
-    "run": {
-      "seed": 0,
-      "mutation_rate": 0.01,
-      "crossover_rate": 0.7,
-      "tournament_size": 5,
-      "population_size": 60,
-      "max_generations": 50,
-      "stopped_reason": "max_generations",
-      "generations_run": 50,
-      "runtime_seconds": 82.82,
-      "is_fit_enough": false,
-      "best_report": {
-        "trees_original": 2519,
-        "trees_cut": 857,
-        "trees_remaining": 1662,
-        "trees_burned": 64,
-        "trees_survived": 1598,
-        "survival_rate": 0.9614921780986763,
-        "burn_rate": 0.02540690750297737,
-        "cut_rate": 0.34021437078205635,
-        "scalar_fitness": 1041.5,
-        "objectives": [
-          1598.0,
-          -64.0
-        ]
-      }
+      },
+      "worst_case_burned": 29
     }
   },
   "ga-mut0.01-xover0.7-tour2": {
@@ -762,34 +677,248 @@
       "algorithm": "ga",
       "mutation_rate": 0.01,
       "crossover_rate": 0.7,
+      "selection_strategy": "tournament",
       "tournament_size": 2
     },
     "run": {
       "seed": 0,
       "mutation_rate": 0.01,
       "crossover_rate": 0.7,
-      "tournament_size": 2,
-      "population_size": 60,
+      "population_size": 50,
+      "max_generations": 50,
+      "stopped_reason": "fit_enough",
+      "generations_run": 23,
+      "runtime_seconds": 2.79,
+      "is_fit_enough": true,
+      "best_report": {
+        "trees_original": 257,
+        "trees_cut": 68,
+        "trees_remaining": 189,
+        "trees_burned": 23,
+        "trees_survived": 166,
+        "survival_rate": 0.8783068783068783,
+        "burn_rate": 0.08949416342412451,
+        "cut_rate": 0.26459143968871596,
+        "scalar_fitness": 72.4,
+        "objectives": [
+          166.0,
+          -23.0
+        ]
+      },
+      "worst_case_burned": 51,
+      "tournament_size": 2
+    }
+  },
+  "ga-mut0.01-xover0.7-tour5": {
+    "config": {
+      "algorithm": "ga",
+      "mutation_rate": 0.01,
+      "crossover_rate": 0.7,
+      "selection_strategy": "tournament",
+      "tournament_size": 5
+    },
+    "run": {
+      "seed": 0,
+      "mutation_rate": 0.01,
+      "crossover_rate": 0.7,
+      "population_size": 50,
+      "max_generations": 50,
+      "stopped_reason": "fit_enough",
+      "generations_run": 37,
+      "runtime_seconds": 2.74,
+      "is_fit_enough": true,
+      "best_report": {
+        "trees_original": 257,
+        "trees_cut": 69,
+        "trees_remaining": 188,
+        "trees_burned": 24,
+        "trees_survived": 164,
+        "survival_rate": 0.8723404255319149,
+        "burn_rate": 0.0933852140077821,
+        "cut_rate": 0.26848249027237353,
+        "scalar_fitness": 67.7,
+        "objectives": [
+          164.0,
+          -24.0
+        ]
+      },
+      "worst_case_burned": 68,
+      "tournament_size": 5
+    }
+  },
+  "nsga2-mut0.01-xover0.7": {
+    "config": {
+      "algorithm": "nsga2",
+      "mutation_rate": 0.01,
+      "crossover_rate": 0.7,
+      "selection_strategy": "tournament"
+    },
+    "run": {
+      "seed": 0,
+      "mutation_rate": 0.01,
+      "crossover_rate": 0.7,
+      "population_size": 100,
+      "max_generations": 40,
+      "generations_run": 40,
+      "runtime_seconds": 3.67,
+      "pareto_front_size": 20,
+      "pareto_summary": [
+        {
+          "trees_survived": 123,
+          "trees_burned": 4,
+          "trees_cut": 130,
+          "worst_case_burned": 13
+        },
+        {
+          "trees_survived": 123,
+          "trees_burned": 4,
+          "trees_cut": 130,
+          "worst_case_burned": 14
+        },
+        {
+          "trees_survived": 125,
+          "trees_burned": 5,
+          "trees_cut": 127,
+          "worst_case_burned": 14
+        },
+        {
+          "trees_survived": 125,
+          "trees_burned": 5,
+          "trees_cut": 127,
+          "worst_case_burned": 19
+        },
+        {
+          "trees_survived": 125,
+          "trees_burned": 5,
+          "trees_cut": 127,
+          "worst_case_burned": 14
+        },
+        {
+          "trees_survived": 125,
+          "trees_burned": 5,
+          "trees_cut": 127,
+          "worst_case_burned": 13
+        },
+        {
+          "trees_survived": 125,
+          "trees_burned": 5,
+          "trees_cut": 127,
+          "worst_case_burned": 16
+        },
+        {
+          "trees_survived": 125,
+          "trees_burned": 5,
+          "trees_cut": 127,
+          "worst_case_burned": 13
+        },
+        {
+          "trees_survived": 125,
+          "trees_burned": 5,
+          "trees_cut": 127,
+          "worst_case_burned": 17
+        },
+        {
+          "trees_survived": 125,
+          "trees_burned": 5,
+          "trees_cut": 127,
+          "worst_case_burned": 13
+        },
+        {
+          "trees_survived": 125,
+          "trees_burned": 5,
+          "trees_cut": 127,
+          "worst_case_burned": 23
+        },
+        {
+          "trees_survived": 125,
+          "trees_burned": 5,
+          "trees_cut": 127,
+          "worst_case_burned": 16
+        },
+        {
+          "trees_survived": 128,
+          "trees_burned": 6,
+          "trees_cut": 123,
+          "worst_case_burned": 15
+        },
+        {
+          "trees_survived": 131,
+          "trees_burned": 7,
+          "trees_cut": 119,
+          "worst_case_burned": 13
+        },
+        {
+          "trees_survived": 131,
+          "trees_burned": 7,
+          "trees_cut": 119,
+          "worst_case_burned": 13
+        },
+        {
+          "trees_survived": 135,
+          "trees_burned": 8,
+          "trees_cut": 114,
+          "worst_case_burned": 57
+        },
+        {
+          "trees_survived": 135,
+          "trees_burned": 8,
+          "trees_cut": 114,
+          "worst_case_burned": 57
+        },
+        {
+          "trees_survived": 139,
+          "trees_burned": 9,
+          "trees_cut": 109,
+          "worst_case_burned": 28
+        },
+        {
+          "trees_survived": 139,
+          "trees_burned": 9,
+          "trees_cut": 109,
+          "worst_case_burned": 57
+        },
+        {
+          "trees_survived": 149,
+          "trees_burned": 10,
+          "trees_cut": 98,
+          "worst_case_burned": 46
+        }
+      ]
+    }
+  },
+  "ga-mut0.01-xover0.7-rank": {
+    "config": {
+      "algorithm": "ga",
+      "mutation_rate": 0.01,
+      "crossover_rate": 0.7,
+      "selection_strategy": "rank_based"
+    },
+    "run": {
+      "seed": 0,
+      "mutation_rate": 0.01,
+      "crossover_rate": 0.7,
+      "population_size": 50,
       "max_generations": 50,
       "stopped_reason": "max_generations",
       "generations_run": 50,
-      "runtime_seconds": 90.26,
+      "runtime_seconds": 5.03,
       "is_fit_enough": false,
       "best_report": {
-        "trees_original": 2519,
-        "trees_cut": 866,
-        "trees_remaining": 1653,
-        "trees_burned": 300,
-        "trees_survived": 1353,
-        "survival_rate": 0.8185117967332124,
-        "burn_rate": 0.11909487892020643,
-        "cut_rate": 0.34378721714966254,
-        "scalar_fitness": 320.0,
+        "trees_original": 257,
+        "trees_cut": 90,
+        "trees_remaining": 167,
+        "trees_burned": 18,
+        "trees_survived": 149,
+        "survival_rate": 0.8922155688622755,
+        "burn_rate": 0.07003891050583658,
+        "cut_rate": 0.35019455252918286,
+        "scalar_fitness": 50.00000000000001,
         "objectives": [
-          1353.0,
-          -300.0
+          149.0,
+          -18.0
         ]
-      }
+      },
+      "worst_case_burned": 41
     }
   },
   "ga-mut0.01-xover0.9-tour5": {
@@ -797,63 +926,36 @@
       "algorithm": "ga",
       "mutation_rate": 0.01,
       "crossover_rate": 0.9,
+      "selection_strategy": "tournament",
       "tournament_size": 5
     },
     "run": {
       "seed": 0,
       "mutation_rate": 0.01,
       "crossover_rate": 0.9,
-      "tournament_size": 5,
-      "population_size": 60,
+      "population_size": 50,
       "max_generations": 50,
-      "stopped_reason": "max_generations",
-      "generations_run": 50,
-      "runtime_seconds": 77.49,
-      "is_fit_enough": false,
+      "stopped_reason": "fit_enough",
+      "generations_run": 19,
+      "runtime_seconds": 2.29,
+      "is_fit_enough": true,
       "best_report": {
-        "trees_original": 2519,
-        "trees_cut": 907,
-        "trees_remaining": 1612,
-        "trees_burned": 54,
-        "trees_survived": 1558,
-        "survival_rate": 0.966501240694789,
-        "burn_rate": 0.02143707820563716,
-        "cut_rate": 0.36006351726875746,
-        "scalar_fitness": 996.5,
+        "trees_original": 257,
+        "trees_cut": 69,
+        "trees_remaining": 188,
+        "trees_burned": 24,
+        "trees_survived": 164,
+        "survival_rate": 0.8723404255319149,
+        "burn_rate": 0.0933852140077821,
+        "cut_rate": 0.26848249027237353,
+        "scalar_fitness": 67.7,
         "objectives": [
-          1558.0,
-          -54.0
+          164.0,
+          -24.0
         ]
-      }
-    }
-  },
-  "nsga2-mut0.01-xover0.9": {
-    "config": {
-      "algorithm": "nsga2",
-      "mutation_rate": 0.01,
-      "crossover_rate": 0.9
-    },
-    "run": {
-      "seed": 0,
-      "mutation_rate": 0.01,
-      "crossover_rate": 0.9,
-      "population_size": 60,
-      "max_generations": 40,
-      "generations_run": 40,
-      "runtime_seconds": 12.76,
-      "pareto_front_size": 2,
-      "pareto_summary": [
-        {
-          "trees_survived": 1375,
-          "trees_burned": 9,
-          "trees_cut": 1135
-        },
-        {
-          "trees_survived": 1412,
-          "trees_burned": 11,
-          "trees_cut": 1096
-        }
-      ]
+      },
+      "worst_case_burned": 55,
+      "tournament_size": 5
     }
   },
   "ga-mut0.01-xover0.9-tour2": {
@@ -861,73 +963,115 @@
       "algorithm": "ga",
       "mutation_rate": 0.01,
       "crossover_rate": 0.9,
+      "selection_strategy": "tournament",
       "tournament_size": 2
     },
     "run": {
       "seed": 0,
       "mutation_rate": 0.01,
       "crossover_rate": 0.9,
-      "tournament_size": 2,
-      "population_size": 60,
+      "population_size": 50,
       "max_generations": 50,
       "stopped_reason": "max_generations",
       "generations_run": 50,
-      "runtime_seconds": 92.89,
+      "runtime_seconds": 4.52,
       "is_fit_enough": false,
       "best_report": {
-        "trees_original": 2519,
-        "trees_cut": 889,
-        "trees_remaining": 1630,
-        "trees_burned": 164,
-        "trees_survived": 1466,
-        "survival_rate": 0.8993865030674847,
-        "burn_rate": 0.06510520047637952,
-        "cut_rate": 0.35291782453354503,
-        "scalar_fitness": 693.5,
+        "trees_original": 257,
+        "trees_cut": 90,
+        "trees_remaining": 167,
+        "trees_burned": 13,
+        "trees_survived": 154,
+        "survival_rate": 0.9221556886227545,
+        "burn_rate": 0.05058365758754864,
+        "cut_rate": 0.35019455252918286,
+        "scalar_fitness": 65.0,
         "objectives": [
-          1466.0,
-          -164.0
+          154.0,
+          -13.0
         ]
-      }
+      },
+      "worst_case_burned": 22,
+      "tournament_size": 2
     }
   },
-  "nsga2-mut0.05-xover0.5": {
+  "nsga2-mut0.01-xover0.9": {
     "config": {
       "algorithm": "nsga2",
-      "mutation_rate": 0.05,
-      "crossover_rate": 0.5
+      "mutation_rate": 0.01,
+      "crossover_rate": 0.9,
+      "selection_strategy": "tournament"
     },
     "run": {
       "seed": 0,
-      "mutation_rate": 0.05,
-      "crossover_rate": 0.5,
-      "population_size": 60,
+      "mutation_rate": 0.01,
+      "crossover_rate": 0.9,
+      "population_size": 100,
       "max_generations": 40,
       "generations_run": 40,
-      "runtime_seconds": 13.71,
+      "runtime_seconds": 3.8,
       "pareto_front_size": 4,
       "pareto_summary": [
         {
-          "trees_survived": 1330,
-          "trees_burned": 9,
-          "trees_cut": 1180
+          "trees_survived": 136,
+          "trees_burned": 6,
+          "trees_cut": 115,
+          "worst_case_burned": 29
         },
         {
-          "trees_survived": 1350,
-          "trees_burned": 15,
-          "trees_cut": 1154
+          "trees_survived": 143,
+          "trees_burned": 8,
+          "trees_cut": 106,
+          "worst_case_burned": 44
         },
         {
-          "trees_survived": 1366,
-          "trees_burned": 18,
-          "trees_cut": 1135
+          "trees_survived": 145,
+          "trees_burned": 12,
+          "trees_cut": 100,
+          "worst_case_burned": 28
         },
         {
-          "trees_survived": 1405,
-          "trees_burned": 20,
-          "trees_cut": 1094
+          "trees_survived": 146,
+          "trees_burned": 13,
+          "trees_cut": 98,
+          "worst_case_burned": 45
         }
       ]
+    }
+  },
+  "ga-mut0.01-xover0.9-rank": {
+    "config": {
+      "algorithm": "ga",
+      "mutation_rate": 0.01,
+      "crossover_rate": 0.9,
+      "selection_strategy": "rank_based"
+    },
+    "run": {
+      "seed": 0,
+      "mutation_rate": 0.01,
+      "crossover_rate": 0.9,
+      "population_size": 50,
+      "max_generations": 50,
+      "stopped_reason": "max_generations",
+      "generations_run": 50,
+      "runtime_seconds": 5.44,
+      "is_fit_enough": false,
+      "best_report": {
+        "trees_original": 257,
+        "trees_cut": 86,
+        "trees_remaining": 171,
+        "trees_burned": 21,
+        "trees_survived": 150,
+        "survival_rate": 0.8771929824561403,
+        "burn_rate": 0.08171206225680934,
+        "cut_rate": 0.3346303501945525,
+        "scalar_fitness": 47.800000000000004,
+        "objectives": [
+          150.0,
+          -21.0
+        ]
+      },
+      "worst_case_burned": 42
     }
   },
   "ga-mut0.05-xover0.5-tour2": {
@@ -935,69 +1079,36 @@
       "algorithm": "ga",
       "mutation_rate": 0.05,
       "crossover_rate": 0.5,
+      "selection_strategy": "tournament",
       "tournament_size": 2
     },
     "run": {
       "seed": 0,
       "mutation_rate": 0.05,
       "crossover_rate": 0.5,
-      "tournament_size": 2,
-      "population_size": 60,
-      "max_generations": 50,
-      "stopped_reason": "converged",
-      "generations_run": 40,
-      "runtime_seconds": 32.2,
-      "is_fit_enough": false,
-      "best_report": {
-        "trees_original": 2519,
-        "trees_cut": 1071,
-        "trees_remaining": 1448,
-        "trees_burned": 24,
-        "trees_survived": 1424,
-        "survival_rate": 0.9834254143646409,
-        "burn_rate": 0.009527590313616514,
-        "cut_rate": 0.425168717745137,
-        "scalar_fitness": 840.5,
-        "objectives": [
-          1424.0,
-          -24.0
-        ]
-      }
-    }
-  },
-  "ga-mut0.05-xover0.5-tour3": {
-    "config": {
-      "algorithm": "ga",
-      "mutation_rate": 0.05,
-      "crossover_rate": 0.5,
-      "tournament_size": 3
-    },
-    "run": {
-      "seed": 0,
-      "mutation_rate": 0.05,
-      "crossover_rate": 0.5,
-      "tournament_size": 3,
-      "population_size": 60,
+      "population_size": 50,
       "max_generations": 50,
       "stopped_reason": "max_generations",
       "generations_run": 50,
-      "runtime_seconds": 31.45,
+      "runtime_seconds": 2.64,
       "is_fit_enough": false,
       "best_report": {
-        "trees_original": 2519,
-        "trees_cut": 1106,
-        "trees_remaining": 1413,
-        "trees_burned": 14,
-        "trees_survived": 1399,
-        "survival_rate": 0.9900920028308563,
-        "burn_rate": 0.0055577610162763,
-        "cut_rate": 0.4390631202858277,
-        "scalar_fitness": 818.0,
+        "trees_original": 257,
+        "trees_cut": 113,
+        "trees_remaining": 144,
+        "trees_burned": 10,
+        "trees_survived": 134,
+        "survival_rate": 0.9305555555555556,
+        "burn_rate": 0.038910505836575876,
+        "cut_rate": 0.4396887159533074,
+        "scalar_fitness": 34.900000000000006,
         "objectives": [
-          1399.0,
-          -14.0
+          134.0,
+          -10.0
         ]
-      }
+      },
+      "worst_case_burned": 51,
+      "tournament_size": 2
     }
   },
   "ga-mut0.05-xover0.5-tour5": {
@@ -1005,76 +1116,107 @@
       "algorithm": "ga",
       "mutation_rate": 0.05,
       "crossover_rate": 0.5,
+      "selection_strategy": "tournament",
       "tournament_size": 5
     },
     "run": {
       "seed": 0,
       "mutation_rate": 0.05,
       "crossover_rate": 0.5,
-      "tournament_size": 5,
-      "population_size": 60,
+      "population_size": 50,
       "max_generations": 50,
-      "stopped_reason": "converged",
-      "generations_run": 39,
-      "runtime_seconds": 29.58,
+      "stopped_reason": "max_generations",
+      "generations_run": 50,
+      "runtime_seconds": 2.39,
       "is_fit_enough": false,
       "best_report": {
-        "trees_original": 2519,
-        "trees_cut": 1049,
-        "trees_remaining": 1470,
-        "trees_burned": 31,
-        "trees_survived": 1439,
-        "survival_rate": 0.9789115646258504,
-        "burn_rate": 0.012306470821754664,
-        "cut_rate": 0.4164350932909885,
-        "scalar_fitness": 852.5,
+        "trees_original": 257,
+        "trees_cut": 94,
+        "trees_remaining": 163,
+        "trees_burned": 12,
+        "trees_survived": 151,
+        "survival_rate": 0.9263803680981595,
+        "burn_rate": 0.04669260700389105,
+        "cut_rate": 0.3657587548638132,
+        "scalar_fitness": 61.2,
         "objectives": [
-          1439.0,
-          -31.0
+          151.0,
+          -12.0
         ]
-      }
+      },
+      "worst_case_burned": 43,
+      "tournament_size": 5
     }
   },
-  "nsga2-mut0.05-xover0.7": {
+  "ga-mut0.05-xover0.5-rank": {
     "config": {
-      "algorithm": "nsga2",
+      "algorithm": "ga",
       "mutation_rate": 0.05,
-      "crossover_rate": 0.7
+      "crossover_rate": 0.5,
+      "selection_strategy": "rank_based"
     },
     "run": {
       "seed": 0,
       "mutation_rate": 0.05,
-      "crossover_rate": 0.7,
-      "population_size": 60,
+      "crossover_rate": 0.5,
+      "population_size": 50,
+      "max_generations": 50,
+      "stopped_reason": "max_generations",
+      "generations_run": 50,
+      "runtime_seconds": 3.27,
+      "is_fit_enough": false,
+      "best_report": {
+        "trees_original": 257,
+        "trees_cut": 103,
+        "trees_remaining": 154,
+        "trees_burned": 10,
+        "trees_survived": 144,
+        "survival_rate": 0.935064935064935,
+        "burn_rate": 0.038910505836575876,
+        "cut_rate": 0.40077821011673154,
+        "scalar_fitness": 51.900000000000006,
+        "objectives": [
+          144.0,
+          -10.0
+        ]
+      },
+      "worst_case_burned": 32
+    }
+  },
+  "nsga2-mut0.05-xover0.5": {
+    "config": {
+      "algorithm": "nsga2",
+      "mutation_rate": 0.05,
+      "crossover_rate": 0.5,
+      "selection_strategy": "tournament"
+    },
+    "run": {
+      "seed": 0,
+      "mutation_rate": 0.05,
+      "crossover_rate": 0.5,
+      "population_size": 100,
       "max_generations": 40,
       "generations_run": 40,
-      "runtime_seconds": 11.96,
-      "pareto_front_size": 5,
+      "runtime_seconds": 4.11,
+      "pareto_front_size": 3,
       "pareto_summary": [
         {
-          "trees_survived": 1303,
+          "trees_survived": 119,
+          "trees_burned": 5,
+          "trees_cut": 133,
+          "worst_case_burned": 21
+        },
+        {
+          "trees_survived": 132,
+          "trees_burned": 6,
+          "trees_cut": 119,
+          "worst_case_burned": 22
+        },
+        {
+          "trees_survived": 150,
           "trees_burned": 7,
-          "trees_cut": 1209
-        },
-        {
-          "trees_survived": 1319,
-          "trees_burned": 11,
-          "trees_cut": 1189
-        },
-        {
-          "trees_survived": 1388,
-          "trees_burned": 15,
-          "trees_cut": 1116
-        },
-        {
-          "trees_survived": 1392,
-          "trees_burned": 18,
-          "trees_cut": 1109
-        },
-        {
-          "trees_survived": 1393,
-          "trees_burned": 38,
-          "trees_cut": 1088
+          "trees_cut": 100,
+          "worst_case_burned": 37
         }
       ]
     }
@@ -1084,69 +1226,36 @@
       "algorithm": "ga",
       "mutation_rate": 0.05,
       "crossover_rate": 0.7,
+      "selection_strategy": "tournament",
       "tournament_size": 2
     },
     "run": {
       "seed": 0,
       "mutation_rate": 0.05,
       "crossover_rate": 0.7,
-      "tournament_size": 2,
-      "population_size": 60,
+      "population_size": 50,
       "max_generations": 50,
-      "stopped_reason": "converged",
-      "generations_run": 45,
-      "runtime_seconds": 33.56,
+      "stopped_reason": "max_generations",
+      "generations_run": 50,
+      "runtime_seconds": 2.83,
       "is_fit_enough": false,
       "best_report": {
-        "trees_original": 2519,
-        "trees_cut": 1084,
-        "trees_remaining": 1435,
-        "trees_burned": 35,
-        "trees_survived": 1400,
-        "survival_rate": 0.975609756097561,
-        "burn_rate": 0.013894402540690751,
-        "cut_rate": 0.43032949583167923,
-        "scalar_fitness": 788.0,
+        "trees_original": 257,
+        "trees_cut": 115,
+        "trees_remaining": 142,
+        "trees_burned": 9,
+        "trees_survived": 133,
+        "survival_rate": 0.9366197183098591,
+        "burn_rate": 0.03501945525291829,
+        "cut_rate": 0.4474708171206226,
+        "scalar_fitness": 34.5,
         "objectives": [
-          1400.0,
-          -35.0
+          133.0,
+          -9.0
         ]
-      }
-    }
-  },
-  "ga-mut0.05-xover0.7-tour3": {
-    "config": {
-      "algorithm": "ga",
-      "mutation_rate": 0.05,
-      "crossover_rate": 0.7,
-      "tournament_size": 3
-    },
-    "run": {
-      "seed": 0,
-      "mutation_rate": 0.05,
-      "crossover_rate": 0.7,
-      "tournament_size": 3,
-      "population_size": 60,
-      "max_generations": 50,
-      "stopped_reason": "converged",
-      "generations_run": 41,
-      "runtime_seconds": 29.92,
-      "is_fit_enough": false,
-      "best_report": {
-        "trees_original": 2519,
-        "trees_cut": 1108,
-        "trees_remaining": 1411,
-        "trees_burned": 15,
-        "trees_survived": 1396,
-        "survival_rate": 0.9893692416725727,
-        "burn_rate": 0.0059547439460103215,
-        "cut_rate": 0.43985708614529573,
-        "scalar_fitness": 812.0,
-        "objectives": [
-          1396.0,
-          -15.0
-        ]
-      }
+      },
+      "worst_case_burned": 24,
+      "tournament_size": 2
     }
   },
   "ga-mut0.05-xover0.7-tour5": {
@@ -1154,61 +1263,125 @@
       "algorithm": "ga",
       "mutation_rate": 0.05,
       "crossover_rate": 0.7,
+      "selection_strategy": "tournament",
       "tournament_size": 5
     },
     "run": {
       "seed": 0,
       "mutation_rate": 0.05,
       "crossover_rate": 0.7,
-      "tournament_size": 5,
-      "population_size": 60,
+      "population_size": 50,
       "max_generations": 50,
-      "stopped_reason": "converged",
-      "generations_run": 40,
-      "runtime_seconds": 27.49,
+      "stopped_reason": "max_generations",
+      "generations_run": 50,
+      "runtime_seconds": 2.4,
       "is_fit_enough": false,
       "best_report": {
-        "trees_original": 2519,
-        "trees_cut": 1038,
-        "trees_remaining": 1481,
-        "trees_burned": 34,
-        "trees_survived": 1447,
-        "survival_rate": 0.9770425388251182,
-        "burn_rate": 0.013497419610956728,
-        "cut_rate": 0.41206828106391424,
-        "scalar_fitness": 860.0,
+        "trees_original": 257,
+        "trees_cut": 96,
+        "trees_remaining": 161,
+        "trees_burned": 12,
+        "trees_survived": 149,
+        "survival_rate": 0.9254658385093167,
+        "burn_rate": 0.04669260700389105,
+        "cut_rate": 0.3735408560311284,
+        "scalar_fitness": 57.80000000000001,
         "objectives": [
-          1447.0,
-          -34.0
+          149.0,
+          -12.0
         ]
-      }
+      },
+      "worst_case_burned": 20,
+      "tournament_size": 5
     }
   },
-  "nsga2-mut0.05-xover0.9": {
+  "ga-mut0.05-xover0.7-rank": {
     "config": {
-      "algorithm": "nsga2",
+      "algorithm": "ga",
       "mutation_rate": 0.05,
-      "crossover_rate": 0.9
+      "crossover_rate": 0.7,
+      "selection_strategy": "rank_based"
     },
     "run": {
       "seed": 0,
       "mutation_rate": 0.05,
-      "crossover_rate": 0.9,
-      "population_size": 60,
+      "crossover_rate": 0.7,
+      "population_size": 50,
+      "max_generations": 50,
+      "stopped_reason": "max_generations",
+      "generations_run": 50,
+      "runtime_seconds": 3.28,
+      "is_fit_enough": false,
+      "best_report": {
+        "trees_original": 257,
+        "trees_cut": 115,
+        "trees_remaining": 142,
+        "trees_burned": 7,
+        "trees_survived": 135,
+        "survival_rate": 0.9507042253521126,
+        "burn_rate": 0.027237354085603113,
+        "cut_rate": 0.4474708171206226,
+        "scalar_fitness": 40.5,
+        "objectives": [
+          135.0,
+          -7.0
+        ]
+      },
+      "worst_case_burned": 30
+    }
+  },
+  "nsga2-mut0.05-xover0.7": {
+    "config": {
+      "algorithm": "nsga2",
+      "mutation_rate": 0.05,
+      "crossover_rate": 0.7,
+      "selection_strategy": "tournament"
+    },
+    "run": {
+      "seed": 0,
+      "mutation_rate": 0.05,
+      "crossover_rate": 0.7,
+      "population_size": 100,
       "max_generations": 40,
       "generations_run": 40,
-      "runtime_seconds": 10.39,
-      "pareto_front_size": 2,
+      "runtime_seconds": 4.23,
+      "pareto_front_size": 6,
       "pareto_summary": [
         {
-          "trees_survived": 1322,
-          "trees_burned": 12,
-          "trees_cut": 1185
+          "trees_survived": 110,
+          "trees_burned": 6,
+          "trees_cut": 141,
+          "worst_case_burned": 19
         },
         {
-          "trees_survived": 1384,
-          "trees_burned": 16,
-          "trees_cut": 1119
+          "trees_survived": 130,
+          "trees_burned": 7,
+          "trees_cut": 120,
+          "worst_case_burned": 19
+        },
+        {
+          "trees_survived": 135,
+          "trees_burned": 9,
+          "trees_cut": 113,
+          "worst_case_burned": 27
+        },
+        {
+          "trees_survived": 139,
+          "trees_burned": 10,
+          "trees_cut": 108,
+          "worst_case_burned": 31
+        },
+        {
+          "trees_survived": 141,
+          "trees_burned": 11,
+          "trees_cut": 105,
+          "worst_case_burned": 25
+        },
+        {
+          "trees_survived": 144,
+          "trees_burned": 13,
+          "trees_cut": 100,
+          "worst_case_burned": 22
         }
       ]
     }
@@ -1218,69 +1391,36 @@
       "algorithm": "ga",
       "mutation_rate": 0.05,
       "crossover_rate": 0.9,
+      "selection_strategy": "tournament",
       "tournament_size": 2
     },
     "run": {
       "seed": 0,
       "mutation_rate": 0.05,
       "crossover_rate": 0.9,
-      "tournament_size": 2,
-      "population_size": 60,
+      "population_size": 50,
       "max_generations": 50,
       "stopped_reason": "converged",
-      "generations_run": 42,
-      "runtime_seconds": 28.24,
+      "generations_run": 36,
+      "runtime_seconds": 2.72,
       "is_fit_enough": false,
       "best_report": {
-        "trees_original": 2519,
-        "trees_cut": 1047,
-        "trees_remaining": 1472,
-        "trees_burned": 54,
-        "trees_survived": 1418,
-        "survival_rate": 0.9633152173913043,
-        "burn_rate": 0.02143707820563716,
-        "cut_rate": 0.41564112743152043,
-        "scalar_fitness": 786.5,
+        "trees_original": 257,
+        "trees_cut": 99,
+        "trees_remaining": 158,
+        "trees_burned": 17,
+        "trees_survived": 141,
+        "survival_rate": 0.8924050632911392,
+        "burn_rate": 0.06614785992217899,
+        "cut_rate": 0.3852140077821012,
+        "scalar_fitness": 37.7,
         "objectives": [
-          1418.0,
-          -54.0
+          141.0,
+          -17.0
         ]
-      }
-    }
-  },
-  "ga-mut0.05-xover0.9-tour3": {
-    "config": {
-      "algorithm": "ga",
-      "mutation_rate": 0.05,
-      "crossover_rate": 0.9,
-      "tournament_size": 3
-    },
-    "run": {
-      "seed": 0,
-      "mutation_rate": 0.05,
-      "crossover_rate": 0.9,
-      "tournament_size": 3,
-      "population_size": 60,
-      "max_generations": 50,
-      "stopped_reason": "converged",
-      "generations_run": 44,
-      "runtime_seconds": 27.31,
-      "is_fit_enough": false,
-      "best_report": {
-        "trees_original": 2519,
-        "trees_cut": 1090,
-        "trees_remaining": 1429,
-        "trees_burned": 25,
-        "trees_survived": 1404,
-        "survival_rate": 0.9825052484254724,
-        "burn_rate": 0.009924573243350537,
-        "cut_rate": 0.43271139341008336,
-        "scalar_fitness": 809.0,
-        "objectives": [
-          1404.0,
-          -25.0
-        ]
-      }
+      },
+      "worst_case_burned": 20,
+      "tournament_size": 2
     }
   },
   "ga-mut0.05-xover0.9-tour5": {
@@ -1288,34 +1428,133 @@
       "algorithm": "ga",
       "mutation_rate": 0.05,
       "crossover_rate": 0.9,
+      "selection_strategy": "tournament",
       "tournament_size": 5
     },
     "run": {
       "seed": 0,
       "mutation_rate": 0.05,
       "crossover_rate": 0.9,
-      "tournament_size": 5,
-      "population_size": 60,
+      "population_size": 50,
       "max_generations": 50,
       "stopped_reason": "max_generations",
       "generations_run": 50,
-      "runtime_seconds": 25.93,
+      "runtime_seconds": 2.65,
       "is_fit_enough": false,
       "best_report": {
-        "trees_original": 2519,
-        "trees_cut": 1092,
-        "trees_remaining": 1427,
-        "trees_burned": 24,
-        "trees_survived": 1403,
-        "survival_rate": 0.9831814996496145,
-        "burn_rate": 0.009527590313616514,
-        "cut_rate": 0.4335053592695514,
-        "scalar_fitness": 809.0,
+        "trees_original": 257,
+        "trees_cut": 107,
+        "trees_remaining": 150,
+        "trees_burned": 10,
+        "trees_survived": 140,
+        "survival_rate": 0.9333333333333333,
+        "burn_rate": 0.038910505836575876,
+        "cut_rate": 0.4163424124513619,
+        "scalar_fitness": 45.10000000000001,
         "objectives": [
-          1403.0,
-          -24.0
+          140.0,
+          -10.0
         ]
-      }
+      },
+      "worst_case_burned": 25,
+      "tournament_size": 5
+    }
+  },
+  "ga-mut0.05-xover0.9-rank": {
+    "config": {
+      "algorithm": "ga",
+      "mutation_rate": 0.05,
+      "crossover_rate": 0.9,
+      "selection_strategy": "rank_based"
+    },
+    "run": {
+      "seed": 0,
+      "mutation_rate": 0.05,
+      "crossover_rate": 0.9,
+      "population_size": 50,
+      "max_generations": 50,
+      "stopped_reason": "converged",
+      "generations_run": 41,
+      "runtime_seconds": 2.88,
+      "is_fit_enough": false,
+      "best_report": {
+        "trees_original": 257,
+        "trees_cut": 123,
+        "trees_remaining": 134,
+        "trees_burned": 9,
+        "trees_survived": 125,
+        "survival_rate": 0.9328358208955224,
+        "burn_rate": 0.03501945525291829,
+        "cut_rate": 0.4785992217898833,
+        "scalar_fitness": 20.900000000000006,
+        "objectives": [
+          125.0,
+          -9.0
+        ]
+      },
+      "worst_case_burned": 42
+    }
+  },
+  "nsga2-mut0.05-xover0.9": {
+    "config": {
+      "algorithm": "nsga2",
+      "mutation_rate": 0.05,
+      "crossover_rate": 0.9,
+      "selection_strategy": "tournament"
+    },
+    "run": {
+      "seed": 0,
+      "mutation_rate": 0.05,
+      "crossover_rate": 0.9,
+      "population_size": 100,
+      "max_generations": 40,
+      "generations_run": 40,
+      "runtime_seconds": 3.26,
+      "pareto_front_size": 7,
+      "pareto_summary": [
+        {
+          "trees_survived": 132,
+          "trees_burned": 6,
+          "trees_cut": 119,
+          "worst_case_burned": 22
+        },
+        {
+          "trees_survived": 143,
+          "trees_burned": 9,
+          "trees_cut": 105,
+          "worst_case_burned": 15
+        },
+        {
+          "trees_survived": 144,
+          "trees_burned": 15,
+          "trees_cut": 98,
+          "worst_case_burned": 20
+        },
+        {
+          "trees_survived": 144,
+          "trees_burned": 15,
+          "trees_cut": 98,
+          "worst_case_burned": 22
+        },
+        {
+          "trees_survived": 145,
+          "trees_burned": 17,
+          "trees_cut": 95,
+          "worst_case_burned": 32
+        },
+        {
+          "trees_survived": 145,
+          "trees_burned": 17,
+          "trees_cut": 95,
+          "worst_case_burned": 80
+        },
+        {
+          "trees_survived": 149,
+          "trees_burned": 18,
+          "trees_cut": 90,
+          "worst_case_burned": 29
+        }
+      ]
     }
   }
 }

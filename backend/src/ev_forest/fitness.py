@@ -28,7 +28,7 @@ from .simulator import simulate_fire
 class FitnessConfig:
     forest_grid: np.ndarray
     ignition_strategy: Strategy = "random"
-    ignition_samples: int = 8
+    ignition_samples: int = 10
     ignition_seed: int = 0
     ignition_point: tuple[int, int] | None = None  # Kept for compatibility, not used in current strategies
     heatmap: np.ndarray | None = None
@@ -36,7 +36,7 @@ class FitnessConfig:
     # Scalar-fitness weights (GA only).
     w_survived: float = 1.0 # check the weights
     w_burned: float = 2.0
-    w_cut: float = 0.5
+    w_cut: float = 0.7
 
     # "Fit enough" acceptance thresholds. We use burn-rate as the primary
     # threshold (fraction of original trees that burn) and cut-rate.
