@@ -27,7 +27,7 @@ from .chromosome import (
     uniform_crossover_patch,
     expand_patch_chromosome,
 )
-from .fitness import FitnessConfig, FitnessReport, evaluate, protect_ignition
+from .fitness import FitnessConfig, FitnessReport, evaluate
 
 
 @dataclass
@@ -224,7 +224,7 @@ def run_nsga2(
     # Final Pareto front extraction.
     final_fronts = _fast_non_dominated_sort(objectives)
     front_idx = final_fronts[0]
-    pareto_front = [protect_ignition(population[i], config) for i in front_idx]
+    pareto_front = [population[i] for i in front_idx]
     pareto_reports = [reports[i] for i in front_idx]
 
     # Sort the front by survived ascending (one axis), so the frontend can plot.
@@ -357,7 +357,7 @@ def run_nsga2_patch(
     pareto_reports = []
     for idx in front_idx:
         expanded = expand_patch_chromosome(population[idx], shape, patch_size=patch_size)
-        pareto_front.append(protect_ignition(expanded, config))
+        pareto_front.append(expanded)
         pareto_reports.append(reports[idx])
 
     # Sort the front by survived ascending (one axis), so the frontend can plot.

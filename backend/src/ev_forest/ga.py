@@ -32,7 +32,6 @@ from .fitness import (
     FitnessReport,
     evaluate,
     is_fit_enough,
-    protect_ignition,
 )
 
 
@@ -163,7 +162,7 @@ def run_ga(
 
     best_idx = int(np.argmax(fitnesses))
     return GAResult(
-        best_individual=protect_ignition(population[best_idx], config),
+        best_individual=population[best_idx],
         best_report=reports[best_idx],
         history=history,
         generations_run=len(history),
@@ -269,7 +268,7 @@ def run_ga_patch(
     best_idx = int(np.argmax(fitnesses))
     best_expanded = expand_patch_chromosome(population[best_idx], shape, patch_size=patch_size)
     return GAResult(
-        best_individual=protect_ignition(best_expanded, config),
+        best_individual=best_expanded,
         best_report=reports[best_idx],
         history=history,
         generations_run=len(history),

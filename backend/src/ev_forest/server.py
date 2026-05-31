@@ -39,7 +39,7 @@ def _fitness_config_from_payload(payload: dict[str, Any], grid: np.ndarray) -> F
     ignition_point = (int(ip[0]), int(ip[1])) if ip else None
     return FitnessConfig(
         forest_grid=grid,
-        ignition_strategy=payload.get("ignition_strategy", "fixed"),
+        ignition_strategy=payload.get("ignition_strategy", "random"),
         ignition_samples=int(payload.get("ignition_samples", 8)),
         ignition_seed=int(payload.get("ignition_seed", 0)),
         ignition_point=ignition_point,

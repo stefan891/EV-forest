@@ -26,10 +26,10 @@ from .ignition import Strategy, expected_burn
 @dataclass
 class FitnessConfig:
     forest_grid: np.ndarray
-    ignition_strategy: Strategy = "fixed"
+    ignition_strategy: Strategy = "random"
     ignition_samples: int = 8
     ignition_seed: int = 0
-    ignition_point: tuple[int, int] | None = None
+    ignition_point: tuple[int, int] | None = None  # Kept for compatibility, not used in current strategies
 
     # Scalar-fitness weights (GA only).
     w_survived: float = 1.0
@@ -70,21 +70,6 @@ class FitnessReport:
         }
 
 
-def protect_ignition(cut_mask: np.ndarray, config: FitnessConfig) -> np.ndarray:
-    """Return a copy of `cut_mask` with the ignition cell forced uncut.
-
-    Without this guard, the optimizer trivially "wins" by cutting the ignition
-    cell — empty cells can't ignite, so burned=0 and the cut looks brilliant.
-    But it doesn't actually defend the rest of the forest from a real fire
-    started anywhere near that point.
-    """
-    if config.ignition_strategy != "fixed" or config.ignition_point is None:
-        return cut_mask
-    out = cut_mask.astype(np.int8, copy=True)
-    r, c = config.ignition_point
-    if 0 <= r < out.shape[0] and 0 <= c < out.shape[1]:
-        out[r, c] = 0
-    return out
 
 
 def evaluate(cut_mask: np.ndarray, config: FitnessConfig) -> FitnessReport:
@@ -92,8 +77,6 @@ def evaluate(cut_mask: np.ndarray, config: FitnessConfig) -> FitnessReport:
     grid = config.forest_grid
     if cut_mask.shape != grid.shape:
         raise ValueError("cut_mask shape mismatch")
-
-    cut_mask = protect_ignition(cut_mask, config)
 
     trees_original = int(grid.sum())
     # cut only counts if it removes a tree (cutting an empty cell is wasted).
@@ -107,7 +90,6 @@ def evaluate(cut_mask: np.ndarray, config: FitnessConfig) -> FitnessReport:
         strategy=config.ignition_strategy,
         samples=config.ignition_samples,
         seed=config.ignition_seed,
-        fixed_at=config.ignition_point,
     )
 
     trees_burned = sim.burned

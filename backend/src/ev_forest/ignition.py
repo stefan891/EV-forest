@@ -1,8 +1,11 @@
 """Ignition strategies — how the fire starts.
 
-This is a modeling decision: the burned-tree objective
-depends on what gets ignited. We expose three strategies; the optimizer picks
-one and the fitness function uses it consistently across all individuals.
+This is a modeling decision: the burned-tree objective depends on what gets
+ignited. We expose two strategies; the optimizer picks one and the fitness
+function uses it consistently across all individuals.
+
+- random: Sample n random tree cells, pick the one burning the most.
+- worst_case: BFS exhaustive search to find the true worst-case ignition point.
 """
 
 from __future__ import annotations
@@ -14,72 +17,58 @@ import numpy as np
 from .forest import TREE
 from .simulator import SimulationResult, simulate_fire
 
-Strategy = Literal["fixed", "random", "worst_case"]
-
-
-def fixed_point(rows: int, cols: int, point: tuple[int, int] | None = None) -> list[tuple[int, int]]:
-    """Single deterministic ignition cell (center by default)."""
-    if point is None:
-        return [(rows // 2, cols // 2)]
-    return [point]
-
-
-def random_points(
-    grid: np.ndarray,
-    n: int = 1,
-    seed: int = 0,
-) -> list[tuple[int, int]]:
-    """Sample `n` random tree cells as ignition points."""
-    rng = np.random.default_rng(seed)
-    tree_positions = np.argwhere(grid == TREE)
-    if len(tree_positions) == 0:
-        return []
-    idx = rng.choice(len(tree_positions), size=min(n, len(tree_positions)), replace=False)
-    return [(int(r), int(c)) for r, c in tree_positions[idx]]
+Strategy = Literal["random", "worst_case"]
 
 
 def expected_burn(
     grid: np.ndarray,
-    strategy: Strategy = "fixed",
+    strategy: Strategy = "random",
     samples: int = 8,
     seed: int = 0,
-    fixed_at: tuple[int, int] | None = None,
 ) -> SimulationResult:
     """Return a representative SimulationResult for the chosen strategy.
 
-    - fixed: ignite at `fixed_at` (or grid center).
-    - random: average burn count over `samples` random ignitions; the returned
-      `final_grid` is from the last sample (animation may not be representative
-      under random — use single ignition for animation).
-    - worst_case: try `samples` random starting points, keep the worst.
+    - random: Sample `samples` random tree cells, return the one that burns most.
+      The returned `final_grid` is from that worst sample (animation shows this burn).
+    - worst_case: BFS exhaustive search across all trees to find the true worst-case
+      ignition point (uses memoization to avoid redundant simulations).
     """
-    rows, cols = grid.shape
-    if strategy == "fixed":
-        return simulate_fire(grid, fixed_point(rows, cols, fixed_at))
-
-    rng = np.random.default_rng(seed)
     tree_positions = np.argwhere(grid == TREE)
     if len(tree_positions) == 0:
         return simulate_fire(grid, [])
 
-    n_samples = min(samples, len(tree_positions))
-    sample_idx = rng.choice(len(tree_positions), size=n_samples, replace=False)
-    results = [
-        simulate_fire(grid, [(int(r), int(c))])
-        for r, c in tree_positions[sample_idx]
-    ]
-
-    if strategy == "worst_case":
+    if strategy == "random":
+        # Sample n random trees and pick the worst burn
+        rng = np.random.default_rng(seed)
+        n_samples = min(samples, len(tree_positions))
+        sample_idx = rng.choice(len(tree_positions), size=n_samples, replace=False)
+        results = [
+            simulate_fire(grid, [(int(r), int(c))])
+            for r, c in tree_positions[sample_idx]
+        ]
         return max(results, key=lambda r: r.burned)
 
-    # "random": average burn across samples, but return last result's grid for shape.
-    avg_burned = int(round(sum(r.burned for r in results) / len(results)))
-    last = results[-1]
-    return SimulationResult(
-        total_trees=last.total_trees,
-        burned=avg_burned,
-        survived=last.total_trees - avg_burned,
-        steps=last.steps,
-        burned_per_step=last.burned_per_step,
-        final_grid=last.final_grid,
-    )
+    # "worst_case": exhaustive BFS search with memoization
+    memo = {}
+
+    def simulate_from(r: int, c: int) -> int:
+        """Simulate fire from (r,c) and return burn count (memoized)."""
+        key = (r, c)
+        if key not in memo:
+            result = simulate_fire(grid, [(r, c)])
+            memo[key] = result.burned
+        return memo[key]
+
+    # Test every tree position, find the one that burns most
+    max_burned = 0
+    worst_point = (0, 0)
+    worst_result = None
+
+    for r, c in tree_positions:
+        burned = simulate_from(int(r), int(c))
+        if burned > max_burned:
+            max_burned = burned
+            worst_point = (int(r), int(c))
+            worst_result = simulate_fire(grid, [worst_point])
+
+    return worst_result if worst_result else simulate_fire(grid, [worst_point])

@@ -77,9 +77,8 @@
       </label>
       <label class="field"><span>Ignition strategy</span>
         <select bind:value={params.ignition_strategy}>
-          <option value="fixed">Fixed (one ignition point)</option>
-          <option value="random">Random (robust)</option>
-          <option value="worst_case">Worst-case (most robust)</option>
+          <option value="random">Random (sample best)</option>
+          <option value="worst_case">Worst-case (exhaustive search)</option>
         </select>
       </label>
       <label class="field"><span>Ignition samples</span>
@@ -89,8 +88,6 @@
         <select bind:value={params.selection_strategy}>
           <option value="tournament">Tournament</option>
           <option value="rank_based">Rank-based</option>
-          <option value="comma">Comma (μ,λ)</option>
-          <option value="plus">Plus (μ+λ)</option>
         </select>
       </label>
       <label class="field"><span>Tournament size</span>
@@ -101,9 +98,8 @@
       </label>
     </div>
     <p class="hint">
-      Pick <strong>random</strong> or <strong>worst-case</strong> if you want a cut that
-      protects against fires starting <em>anywhere</em>. <strong>Fixed</strong> only
-      protects against fire from the clicked ignition cell.
+      Use <strong>random</strong> for faster sampling-based robustness check.
+      Use <strong>worst-case</strong> for true worst-case ignition point (exhaustive search, slower).
     </p>
     <div class="row" style="margin-top: 0.75rem;">
       <button class="primary" disabled={busy} on:click={() => emit('runGA')}>Run GA (single-objective)</button>

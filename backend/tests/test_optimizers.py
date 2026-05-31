@@ -9,7 +9,7 @@ from __future__ import annotations
 
 import numpy as np
 
-from ev_forest.fitness import FitnessConfig, evaluate, protect_ignition
+from ev_forest.fitness import FitnessConfig, evaluate
 from ev_forest.forest import make_forest
 from ev_forest.ga import run_ga
 from ev_forest.nsga2 import _dominates, run_nsga2
@@ -19,8 +19,8 @@ def _small_dense_problem() -> FitnessConfig:
     forest = make_forest(10, 10, layout="dense")
     return FitnessConfig(
         forest_grid=forest.grid,
-        ignition_strategy="fixed",
-        ignition_point=(5, 5),
+        ignition_strategy="random",
+        ignition_samples=4,
         min_survival_rate=0.80,
         max_burn_rate=0.10,
         max_cut_rate=0.40,
@@ -32,28 +32,6 @@ def test_no_cut_baseline_burns_dense_forest_fully():
     no_cut = np.zeros_like(config.forest_grid)
     report = evaluate(no_cut, config)
     assert report.trees_burned == report.trees_original
-
-
-def test_cutting_ignition_cell_is_neutralized():
-    """Anti-cheat: cutting only the ignition cell must NOT save the forest."""
-    config = _small_dense_problem()  # 10x10 dense, ignition at (5,5)
-    cheat = np.zeros_like(config.forest_grid)
-    cheat[5, 5] = 1  # cut only the ignition point
-    report = evaluate(cheat, config)
-    # Without anti-cheat the fire would never start (burn=0). With anti-cheat,
-    # the ignition cell is force-uncut, so the fire actually runs.
-    assert report.trees_burned == report.trees_original
-    # And the "cut" bit at the ignition cell should not be counted.
-    assert report.trees_cut == 0
-
-
-def test_protect_ignition_helper_clears_only_ignition_bit():
-    config = _small_dense_problem()  # ignition at (5,5)
-    mask = np.ones((10, 10), dtype=np.int8)
-    protected = protect_ignition(mask, config)
-    assert protected[5, 5] == 0
-    # Every other cell is untouched.
-    assert protected.sum() == 99
 
 
 def test_ga_improves_over_no_cut():
