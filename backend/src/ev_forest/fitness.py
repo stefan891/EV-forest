@@ -21,6 +21,7 @@ from typing import Sequence
 import numpy as np
 
 from .ignition import Strategy, expected_burn
+from .simulator import simulate_fire
 
 
 @dataclass
@@ -30,6 +31,7 @@ class FitnessConfig:
     ignition_samples: int = 8
     ignition_seed: int = 0
     ignition_point: tuple[int, int] | None = None  # Kept for compatibility, not used in current strategies
+    heatmap: np.ndarray | None = None
 
     # Scalar-fitness weights (GA only).
     w_survived: float = 1.0 # check the weights
@@ -85,11 +87,13 @@ def evaluate(cut_mask: np.ndarray, config: FitnessConfig) -> FitnessReport:
     remaining_grid = (grid & (1 - cut_mask.astype(np.int8))).astype(np.int8)
     trees_remaining = int(remaining_grid.sum())
 
+    
     sim = expected_burn(
         remaining_grid,
         strategy=config.ignition_strategy,
         samples=config.ignition_samples,
         seed=config.ignition_seed,
+        heatmap=config.heatmap,
     )
 
     trees_burned = sim.burned

@@ -94,6 +94,7 @@
       <label class="field"><span>Ignition strategy</span>
         <select bind:value={params.ignition_strategy}>
           <option value="random">Random (sample best)</option>
+          <option value="heatmap">Heatmap (hotspot)</option>
           <option value="worst_case">Worst-case (exhaustive search)</option>
         </select>
       </label>

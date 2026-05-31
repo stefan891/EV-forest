@@ -48,12 +48,20 @@ def _heatmap_from_payload(payload: dict[str, Any], shape: tuple[int, int]) -> np
 def _fitness_config_from_payload(payload: dict[str, Any], grid: np.ndarray) -> FitnessConfig:
     ip = payload.get("ignition_point")
     ignition_point = (int(ip[0]), int(ip[1])) if ip else None
+    heatmap_payload = payload.get("heatmap")
+    heatmap_arr = None
+    if heatmap_payload:
+        try:
+            heatmap_arr = np.array(heatmap_payload, dtype=float)
+        except Exception:
+            heatmap_arr = None
     return FitnessConfig(
         forest_grid=grid,
         ignition_strategy=payload.get("ignition_strategy", "random"),
         ignition_samples=int(payload.get("ignition_samples", 8)),
         ignition_seed=int(payload.get("ignition_seed", 0)),
         ignition_point=ignition_point,
+        heatmap=heatmap_arr,
         w_survived=float(payload.get("w_survived", 1.0)),
         w_burned=float(payload.get("w_burned", 2.0)),
         w_cut=float(payload.get("w_cut", 0.5)),

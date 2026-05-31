@@ -17,19 +17,19 @@ import numpy as np
 from .forest import TREE
 from .simulator import SimulationResult, simulate_fire
 
-Strategy = Literal["random", "worst_case"]
-
-def fixed_point(rows: int, cols: int, point: tuple[int, int] | None = None) -> list[tuple[int, int]]:
-    """Single deterministic ignition cell (center by default)."""
-    if point is None:
-        return [(rows // 2, cols // 2)]
-    return [point]
+Strategy = Literal["random", "worst_case", "heatmap"]
+# def fixed_point(rows: int, cols: int, point: tuple[int, int] | None = None) -> list[tuple[int, int]]:
+#     """Single deterministic ignition cell (center by default)."""
+#     if point is None:
+#         return [(rows // 2, cols // 2)]
+#     return [point]
 
 def expected_burn(
     grid: np.ndarray,
     strategy: Strategy = "random",
     samples: int = 8,
     seed: int = 0,
+    heatmap: np.ndarray | None = None,
 ) -> SimulationResult:
     """Return a representative SimulationResult for the chosen strategy.
 
@@ -37,6 +37,7 @@ def expected_burn(
       The returned `final_grid` is from that worst sample (animation shows this burn).
     - worst_case: BFS exhaustive search across all trees to find the true worst-case
       ignition point (uses memoization to avoid redundant simulations).
+    - heatmap: Sample `samples` random tree cells weighted by the provided heatmap
     """
     tree_positions = np.argwhere(grid == TREE)
     if len(tree_positions) == 0:
@@ -47,6 +48,36 @@ def expected_burn(
         rng = np.random.default_rng(seed)
         n_samples = min(samples, len(tree_positions))
         sample_idx = rng.choice(len(tree_positions), size=n_samples, replace=False)
+        results = [
+            simulate_fire(grid, [(int(r), int(c))])
+            for r, c in tree_positions[sample_idx]
+        ]
+        return max(results, key=lambda r: r.burned)
+
+    if strategy == "heatmap":
+        # Use the provided heatmap to weight sampled ignition points. If no
+        # heatmap is provided, fall back to uniform random sampling.
+        rng = np.random.default_rng(seed)
+        weights = None
+        if heatmap is not None:
+            # Collect weights for tree positions only
+            w = []
+            for r, c in tree_positions:
+                val = float(heatmap[int(r)][int(c)])
+                w.append(max(0.0, val))
+            total = sum(w)
+            if total > 0:
+                # Normalize weights
+                weights = np.array(w) / total
+
+        n_samples = min(samples, len(tree_positions))
+        if weights is None:
+            # Uniform sampling
+            sample_idx = rng.choice(len(tree_positions), size=n_samples, replace=False)
+        else:
+            # Weighted sampling without replacement: use choice with p=weights
+            sample_idx = rng.choice(len(tree_positions), size=n_samples, replace=False, p=weights)
+
         results = [
             simulate_fire(grid, [(int(r), int(c))])
             for r, c in tree_positions[sample_idx]
@@ -65,7 +96,7 @@ def expected_burn(
         return memo[key]
 
     # Test every tree position, find the one that burns most
-    max_burned = 0
+    max_burned = -1
     worst_point = (0, 0)
     worst_result = None
 
