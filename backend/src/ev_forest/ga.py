@@ -133,6 +133,7 @@ def run_ga(
         elite_idx = np.argsort(fitnesses)[-elitism:][::-1] if elitism > 0 else []
         next_pop: list[np.ndarray] = [population[i].copy() for i in elite_idx]
 
+        #Offspring selection 
         while len(next_pop) < population_size:
             # Selection
             if selection_strategy == "tournament":

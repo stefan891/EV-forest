@@ -177,15 +177,15 @@ def run_nsga2(
         offspring: list[np.ndarray] = []
         while len(offspring) < population_size:
             i, j = rng.integers(0, population_size, size=2)
-            p1 = _crowded_compare(int(i), int(j), rank, crowding)
+            p1 = _crowded_compare(int(i), int(j), rank, crowding) #binary tournament
             i, j = rng.integers(0, population_size, size=2)
             p2 = _crowded_compare(int(i), int(j), rank, crowding)
             if rng.random() < crossover_rate:
-                child = uniform_crossover(population[p1], population[p2], rng)
+                child = uniform_crossover(population[p1], population[p2], rng) # crossover
             else:
                 child = population[p1].copy()
             # Mutation
-            child = bit_flip_mutation(child, mutation_rate, rng)
+            child = bit_flip_mutation(child, mutation_rate, rng) # mutation
             offspring.append(child)
 
         offspring_reports = [evaluate(c, config) for c in offspring]

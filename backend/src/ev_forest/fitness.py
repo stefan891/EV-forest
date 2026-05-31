@@ -32,7 +32,7 @@ class FitnessConfig:
     ignition_point: tuple[int, int] | None = None  # Kept for compatibility, not used in current strategies
 
     # Scalar-fitness weights (GA only).
-    w_survived: float = 1.0
+    w_survived: float = 1.0 # check the weights
     w_burned: float = 2.0
     w_cut: float = 0.5
 
