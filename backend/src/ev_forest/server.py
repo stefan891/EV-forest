@@ -21,9 +21,9 @@ from flask_cors import CORS
 
 from .fitness import FitnessConfig, evaluate
 from .forest import make_forest, serialize
-from .ga import run_ga
+from .ga import run_ga, run_ga_patch
 from .ignition import Strategy
-from .nsga2 import run_nsga2
+from .nsga2 import run_nsga2, run_nsga2_patch
 from .simulator import simulate_fire
 
 
@@ -111,7 +111,9 @@ def create_app() -> Flask:
         body = request.get_json(force=True) or {}
         grid = _as_grid(body["grid"])
         config = _fitness_config_from_payload(body, grid)
-        result = run_ga(
+        patch_size = int(body.get("patch_size", 1))
+        use_patch = patch_size > 1
+        result = (run_ga_patch if use_patch else run_ga)(
             config,
             population_size=int(body.get("population_size", 60)),
             max_generations=int(body.get("max_generations", 60)),
@@ -123,6 +125,7 @@ def create_app() -> Flask:
             elitism=int(body.get("elitism", 2)),
             patience=int(body.get("patience", 25)),
             seed=int(body.get("seed", 0)),
+            **(dict(patch_size=patch_size) if use_patch else {}),
         )
         baseline = evaluate(np.zeros_like(grid), config)
         return jsonify({
@@ -142,12 +145,16 @@ def create_app() -> Flask:
             ],
         })
 
+    # The /api/optimize/ga endpoint handles patch_size transparently
+
     @app.post("/api/optimize/nsga2")
     def optimize_nsga2_endpoint() -> Any:
         body = request.get_json(force=True) or {}
         grid = _as_grid(body["grid"])
         config = _fitness_config_from_payload(body, grid)
-        result = run_nsga2(
+        patch_size = int(body.get("patch_size", 1))
+        use_patch = patch_size > 1
+        result = (run_nsga2_patch if use_patch else run_nsga2)(
             config,
             population_size=int(body.get("population_size", 60)),
             max_generations=int(body.get("max_generations", 50)),
@@ -157,6 +164,7 @@ def create_app() -> Flask:
             mutation_rate=float(body.get("mutation_rate", 0.01)),
             initial_cut_probability=float(body.get("initial_cut_probability", 0.15)),
             seed=int(body.get("seed", 0)),
+            **(dict(patch_size=patch_size) if use_patch else {}),
         )
         baseline = evaluate(np.zeros_like(grid), config)
         return jsonify({

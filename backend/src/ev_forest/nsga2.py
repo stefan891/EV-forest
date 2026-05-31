@@ -18,7 +18,15 @@ from typing import Callable
 
 import numpy as np
 
-from .chromosome import bit_flip_mutation, random_individual, uniform_crossover
+from .chromosome import (
+    bit_flip_mutation,
+    random_individual,
+    uniform_crossover,
+    bit_flip_mutation_patch,
+    random_individual_patch,
+    uniform_crossover_patch,
+    expand_patch_chromosome,
+)
 from .fitness import FitnessConfig, FitnessReport, evaluate, protect_ignition
 
 
@@ -218,6 +226,139 @@ def run_nsga2(
     front_idx = final_fronts[0]
     pareto_front = [protect_ignition(population[i], config) for i in front_idx]
     pareto_reports = [reports[i] for i in front_idx]
+
+    # Sort the front by survived ascending (one axis), so the frontend can plot.
+    order = sorted(range(len(pareto_reports)), key=lambda k: pareto_reports[k].objectives[0])
+    pareto_front = [pareto_front[k] for k in order]
+    pareto_reports = [pareto_reports[k] for k in order]
+
+    return NSGA2Result(
+        pareto_front=pareto_front,
+        pareto_reports=pareto_reports,
+        population_reports=reports,
+        history=history,
+        generations_run=len(history),
+    )
+
+
+def run_nsga2_patch(
+    config: FitnessConfig,
+    population_size: int = 80,
+    max_generations: int = 80,
+    selection_strategy: str = "tournament",
+    tournament_size: int = 2,
+    crossover_rate: float = 0.9,
+    mutation_rate: float = 0.01,
+    initial_cut_probability: float = 0.15,
+    patch_size: int = 2,
+    seed: int = 0,
+    progress_callback: Callable[[NSGA2Stats], None] | None = None,
+) -> NSGA2Result:
+    """Run NSGA-II with patch-based chromosome representation.
+    
+    Each patch_size × patch_size square is treated as a single unit.
+    If map size not divisible by patch_size, pad with cut trees.
+    """
+    rng = np.random.default_rng(seed)
+    shape = config.forest_grid.shape
+
+    # Spread initial cut probability across the population
+    lo = max(0.01, initial_cut_probability * 0.2)
+    hi = min(0.7, initial_cut_probability * 3.0)
+    init_probs = np.linspace(lo, hi, population_size)
+    population: list[np.ndarray] = [
+        random_individual_patch(shape, float(p), rng, patch_size=patch_size) for p in init_probs
+    ]
+    
+    # Expand to full grid for evaluation
+    expanded_pop = [expand_patch_chromosome(ind, shape, patch_size=patch_size) for ind in population]
+    reports: list[FitnessReport] = [evaluate(ind, config) for ind in expanded_pop]
+    objectives: list[tuple[float, float]] = [r.objectives for r in reports]
+
+    history: list[NSGA2Stats] = []
+
+    for gen in range(max_generations):
+        # Sort current population for selection.
+        fronts = _fast_non_dominated_sort(objectives)
+        rank: dict[int, int] = {}
+        crowding: dict[int, float] = {}
+        for r, front in enumerate(fronts):
+            cd = _crowding_distance(front, objectives)
+            for idx in front:
+                rank[idx] = r
+                crowding[idx] = cd[idx]
+
+        # Record stats from the current Pareto front.
+        f1 = fronts[0]
+        stats = NSGA2Stats(
+            generation=gen,
+            front_size=len(f1),
+            front_objectives=[objectives[i] for i in f1],
+        )
+        history.append(stats)
+        if progress_callback is not None:
+            progress_callback(stats)
+
+        # Generate offspring via binary tournament + crossover + mutation (on patches).
+        offspring: list[np.ndarray] = []
+        while len(offspring) < population_size:
+            i, j = rng.integers(0, population_size, size=2)
+            p1 = _crowded_compare(int(i), int(j), rank, crowding)
+            i, j = rng.integers(0, population_size, size=2)
+            p2 = _crowded_compare(int(i), int(j), rank, crowding)
+            if rng.random() < crossover_rate:
+                child = uniform_crossover_patch(population[p1], population[p2], rng)
+            else:
+                child = population[p1].copy()
+            # Mutation (on patch level)
+            child = bit_flip_mutation_patch(child, mutation_rate, rng)
+            offspring.append(child)
+
+        # Expand offspring and evaluate
+        expanded_offspring = [expand_patch_chromosome(ind, shape, patch_size=patch_size) for ind in offspring]
+        offspring_reports = [evaluate(c, config) for c in expanded_offspring]
+        offspring_objectives = [r.objectives for r in offspring_reports]
+
+        # Combine parents + offspring (2N) and pick the best N.
+        combined_pop = population + offspring
+        combined_reports = reports + offspring_reports
+        combined_objectives = objectives + offspring_objectives
+
+        combined_fronts = _fast_non_dominated_sort(combined_objectives)
+        new_pop: list[np.ndarray] = []
+        new_reports: list[FitnessReport] = []
+        new_objectives: list[tuple[float, float]] = []
+        for front in combined_fronts:
+            if len(new_pop) + len(front) <= population_size:
+                for idx in front:
+                    new_pop.append(combined_pop[idx])
+                    new_reports.append(combined_reports[idx])
+                    new_objectives.append(combined_objectives[idx])
+            else:
+                # Trim the last front by crowding distance (keep the most spread out).
+                cd = _crowding_distance(front, combined_objectives)
+                remaining = population_size - len(new_pop)
+                sorted_by_cd = sorted(front, key=lambda i: cd[i], reverse=True)
+                for idx in sorted_by_cd[:remaining]:
+                    new_pop.append(combined_pop[idx])
+                    new_reports.append(combined_reports[idx])
+                    new_objectives.append(combined_objectives[idx])
+                break
+
+        population = new_pop
+        reports = new_reports
+        objectives = new_objectives
+
+    # Final Pareto front extraction and expansion.
+    final_fronts = _fast_non_dominated_sort(objectives)
+    front_idx = final_fronts[0]
+    
+    pareto_front = []
+    pareto_reports = []
+    for idx in front_idx:
+        expanded = expand_patch_chromosome(population[idx], shape, patch_size=patch_size)
+        pareto_front.append(protect_ignition(expanded, config))
+        pareto_reports.append(reports[idx])
 
     # Sort the front by survived ascending (one axis), so the frontend can plot.
     order = sorted(range(len(pareto_reports)), key=lambda k: pareto_reports[k].objectives[0])

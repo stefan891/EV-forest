@@ -25,6 +25,7 @@
     ignition_samples: 12,
     selection_strategy: 'tournament',
     tournament_size: 3,
+    patch_size: 2,
   };
 
   let grid = [];
@@ -126,6 +127,7 @@
       mutation_rate: params.mutation_rate,
       crossover_rate: params.crossover_rate,
       initial_cut_probability: params.initial_cut_probability,
+      patch_size: params.patch_size,
       seed: params.optimizer_seed,
       ignition_point: ignitionPoint,
       ignition_strategy: params.ignition_strategy,

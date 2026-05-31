@@ -96,6 +96,9 @@
       <label class="field"><span>Tournament size</span>
         <input type="number" min="2" max="20" bind:value={params.tournament_size} />
       </label>
+      <label class="field"><span>Patch size (GA)</span>
+        <input type="number" min="1" max="10" bind:value={params.patch_size} />
+      </label>
     </div>
     <p class="hint">
       Pick <strong>random</strong> or <strong>worst-case</strong> if you want a cut that
