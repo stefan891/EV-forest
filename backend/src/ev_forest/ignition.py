@@ -19,6 +19,11 @@ from .simulator import SimulationResult, simulate_fire
 
 Strategy = Literal["random", "worst_case"]
 
+def fixed_point(rows: int, cols: int, point: tuple[int, int] | None = None) -> list[tuple[int, int]]:
+    """Single deterministic ignition cell (center by default)."""
+    if point is None:
+        return [(rows // 2, cols // 2)]
+    return [point]
 
 def expected_burn(
     grid: np.ndarray,

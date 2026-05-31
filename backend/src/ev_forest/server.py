@@ -26,7 +26,6 @@ from .heatmap import HeatmapConfig, make_heatmap, serialize_heatmap
 from .ignition import Strategy
 from .nsga2 import run_nsga2, run_nsga2_patch
 from .simulator import simulate_fire
-from .weighted_pipeline import WeightedPipeline
 
 
 def _as_grid(data: list[list[int]]) -> np.ndarray:
@@ -161,25 +160,7 @@ def create_app() -> Flask:
             seed=int(body.get("seed", 0)),
             **(dict(patch_size=patch_size) if use_patch else {}),
         )
-        weights = _heatmap_from_payload(body, grid.shape)
-        pipeline = WeightedPipeline(config, weights) if weights is not None else None
-        ga_kwargs = dict(
-            population_size=int(body.get("population_size", 60)),
-            max_generations=int(body.get("max_generations", 60)),
-            tournament_size=int(body.get("tournament_size", 3)),
-            crossover_rate=float(body.get("crossover_rate", 0.9)),
-            mutation_rate=float(body.get("mutation_rate", 0.01)),
-            initial_cut_probability=float(body.get("initial_cut_probability", 0.1)),
-            elitism=int(body.get("elitism", 2)),
-            patience=int(body.get("patience", 25)),
-            seed=int(body.get("seed", 0)),
-        )
-        if pipeline is not None:
-            result = pipeline.run_ga(**ga_kwargs)
-            baseline = pipeline.evaluate(np.zeros_like(grid))
-        else:
-            result = run_ga(config, **ga_kwargs)
-            baseline = evaluate(np.zeros_like(grid), config)
+        baseline = evaluate(np.zeros_like(grid), config)
         return jsonify({
             "best_cut_mask": serialize(result.best_individual),
             "best_report": result.best_report.as_dict(),
@@ -218,22 +199,7 @@ def create_app() -> Flask:
             seed=int(body.get("seed", 0)),
             **(dict(patch_size=patch_size) if use_patch else {}),
         )
-        weights = _heatmap_from_payload(body, grid.shape)
-        pipeline = WeightedPipeline(config, weights) if weights is not None else None
-        nsga2_kwargs = dict(
-            population_size=int(body.get("population_size", 60)),
-            max_generations=int(body.get("max_generations", 50)),
-            crossover_rate=float(body.get("crossover_rate", 0.9)),
-            mutation_rate=float(body.get("mutation_rate", 0.01)),
-            initial_cut_probability=float(body.get("initial_cut_probability", 0.15)),
-            seed=int(body.get("seed", 0)),
-        )
-        if pipeline is not None:
-            result = pipeline.run_nsga2(**nsga2_kwargs)
-            baseline = pipeline.evaluate(np.zeros_like(grid))
-        else:
-            result = run_nsga2(config, **nsga2_kwargs)
-            baseline = evaluate(np.zeros_like(grid), config)
+        baseline = evaluate(np.zeros_like(grid), config)
         return jsonify({
             "pareto_front": [
                 {
