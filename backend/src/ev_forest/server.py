@@ -22,15 +22,27 @@ from flask_cors import CORS
 from .fitness import FitnessConfig, evaluate
 from .forest import make_forest, serialize
 from .ga import run_ga
+from .heatmap import HeatmapConfig, make_heatmap, serialize_heatmap
 from .ignition import Strategy
 from .nsga2 import run_nsga2
 from .simulator import simulate_fire
+from .weighted_pipeline import WeightedPipeline
 
 
 def _as_grid(data: list[list[int]]) -> np.ndarray:
     arr = np.array(data, dtype=np.int8)
     if arr.ndim != 2:
         raise ValueError("grid must be 2D")
+    return arr
+
+
+def _heatmap_from_payload(payload: dict[str, Any], shape: tuple[int, int]) -> np.ndarray | None:
+    hm = payload.get("heatmap")
+    if hm is None:
+        return None
+    arr = np.asarray(hm, dtype=np.float32)
+    if arr.shape != shape:
+        raise ValueError(f"heatmap shape {arr.shape} != grid shape {shape}")
     return arr
 
 
@@ -70,13 +82,36 @@ def create_app() -> Flask:
             density=float(body.get("density", 1.0)),
             seed=int(body.get("seed", 0)),
         )
+        heatmap = make_heatmap(HeatmapConfig(
+            rows=forest.grid.shape[0],
+            cols=forest.grid.shape[1],
+            n_hotspots=int(body.get("n_hotspots", 0)),
+            hotspot_strength=float(body.get("hotspot_strength", 6.0)),
+            hotspot_sigma_frac=float(body.get("hotspot_sigma_frac", 0.10)),
+            seed=int(body.get("heatmap_seed", 0)),
+        ))
         return jsonify({
             "grid": serialize(forest.grid),
             "layout": forest.layout,
             "seed": forest.seed,
             "density": forest.density,
             "tree_count": forest.tree_count,
+            "heatmap": serialize_heatmap(heatmap),
         })
+
+    @app.post("/api/heatmap")
+    def heatmap_endpoint() -> Any:
+        """Regenerate just the heatmap (keeps the user's current forest)."""
+        body = request.get_json(force=True) or {}
+        heatmap = make_heatmap(HeatmapConfig(
+            rows=int(body.get("rows", 30)),
+            cols=int(body.get("cols", 30)),
+            n_hotspots=int(body.get("n_hotspots", 0)),
+            hotspot_strength=float(body.get("hotspot_strength", 6.0)),
+            hotspot_sigma_frac=float(body.get("hotspot_sigma_frac", 0.10)),
+            seed=int(body.get("heatmap_seed", 0)),
+        ))
+        return jsonify({"heatmap": serialize_heatmap(heatmap)})
 
     @app.post("/api/simulate")
     def simulate_endpoint() -> Any:
@@ -111,8 +146,9 @@ def create_app() -> Flask:
         body = request.get_json(force=True) or {}
         grid = _as_grid(body["grid"])
         config = _fitness_config_from_payload(body, grid)
-        result = run_ga(
-            config,
+        weights = _heatmap_from_payload(body, grid.shape)
+        pipeline = WeightedPipeline(config, weights) if weights is not None else None
+        ga_kwargs = dict(
             population_size=int(body.get("population_size", 60)),
             max_generations=int(body.get("max_generations", 60)),
             tournament_size=int(body.get("tournament_size", 3)),
@@ -123,7 +159,12 @@ def create_app() -> Flask:
             patience=int(body.get("patience", 25)),
             seed=int(body.get("seed", 0)),
         )
-        baseline = evaluate(np.zeros_like(grid), config)
+        if pipeline is not None:
+            result = pipeline.run_ga(**ga_kwargs)
+            baseline = pipeline.evaluate(np.zeros_like(grid))
+        else:
+            result = run_ga(config, **ga_kwargs)
+            baseline = evaluate(np.zeros_like(grid), config)
         return jsonify({
             "best_cut_mask": serialize(result.best_individual),
             "best_report": result.best_report.as_dict(),
@@ -146,8 +187,9 @@ def create_app() -> Flask:
         body = request.get_json(force=True) or {}
         grid = _as_grid(body["grid"])
         config = _fitness_config_from_payload(body, grid)
-        result = run_nsga2(
-            config,
+        weights = _heatmap_from_payload(body, grid.shape)
+        pipeline = WeightedPipeline(config, weights) if weights is not None else None
+        nsga2_kwargs = dict(
             population_size=int(body.get("population_size", 60)),
             max_generations=int(body.get("max_generations", 50)),
             crossover_rate=float(body.get("crossover_rate", 0.9)),
@@ -155,7 +197,12 @@ def create_app() -> Flask:
             initial_cut_probability=float(body.get("initial_cut_probability", 0.15)),
             seed=int(body.get("seed", 0)),
         )
-        baseline = evaluate(np.zeros_like(grid), config)
+        if pipeline is not None:
+            result = pipeline.run_nsga2(**nsga2_kwargs)
+            baseline = pipeline.evaluate(np.zeros_like(grid))
+        else:
+            result = run_nsga2(config, **nsga2_kwargs)
+            baseline = evaluate(np.zeros_like(grid), config)
         return jsonify({
             "pareto_front": [
                 {

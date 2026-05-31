@@ -11,6 +11,8 @@
   export let burning = new Set();
   /** Ignition point — [r, c] or null. */
   export let ignitionPoint = null;
+  /** Heatmap: optional 2D array of per-cell ignition weights (baseline = 1). */
+  export let heatmap = null;
   /** Cell size in pixels. */
   export let cellSize = 12;
   /** Whether clicks set the ignition point. */
@@ -49,6 +51,29 @@
       for (let c = 0; c < cols; c++) {
         ctx.fillStyle = colorFor(r, c);
         ctx.fillRect(c * cellSize, r * cellSize, cellSize, cellSize);
+      }
+    }
+    // Heatmap overlay — translucent red wherever weights exceed baseline.
+    // Drawn between cells and ignition marker so the marker stays on top.
+    if (heatmap && heatmap.length === rows && heatmap[0]?.length === cols) {
+      let maxExcess = 0;
+      for (let r = 0; r < rows; r++) {
+        for (let c = 0; c < cols; c++) {
+          const excess = heatmap[r][c] - 1.0;  // baseline = 1.0
+          if (excess > maxExcess) maxExcess = excess;
+        }
+      }
+      if (maxExcess > 0) {
+        for (let r = 0; r < rows; r++) {
+          for (let c = 0; c < cols; c++) {
+            const excess = heatmap[r][c] - 1.0;
+            if (excess > 0) {
+              const alpha = Math.min(0.55, 0.55 * excess / maxExcess);
+              ctx.fillStyle = `rgba(220, 38, 38, ${alpha})`;
+              ctx.fillRect(c * cellSize, r * cellSize, cellSize, cellSize);
+            }
+          }
+        }
       }
     }
     // Draw ignition marker.

@@ -1,6 +1,6 @@
 <script>
   import { onMount } from 'svelte';
-  import { generateForest, simulate, optimizeGA, optimizeNSGA2 } from './lib/api.js';
+  import { generateForest, generateHeatmap, simulate, optimizeGA, optimizeNSGA2 } from './lib/api.js';
   import ForestCanvas from './lib/ForestCanvas.svelte';
   import Controls from './lib/Controls.svelte';
   import ParetoChart from './lib/ParetoChart.svelte';
@@ -12,6 +12,9 @@
     layout: 'dense',
     density: 1.0,
     seed: 0,
+    n_hotspots: 3,
+    heatmap_seed: 0,
+    hotspot_strength: 6.0,
     min_survival_rate: 0.85,
     max_burn_rate: 0.05,
     max_cut_rate: 0.30,
@@ -27,6 +30,7 @@
 
   let grid = [];
   let cutMask = null;
+  let heatmap = null;
   let ignitionPoint = null;
   let burnedSet = new Set();
   let burningSet = new Set();
@@ -53,8 +57,12 @@
       const r = await generateForest({
         rows: params.rows, cols: params.cols, layout: params.layout,
         density: params.density, seed: params.seed,
+        n_hotspots: params.n_hotspots,
+        heatmap_seed: params.heatmap_seed,
+        hotspot_strength: params.hotspot_strength,
       });
       grid = r.grid;
+      heatmap = r.heatmap;
       cutMask = emptyMask();
       burnedSet = new Set();
       burningSet = new Set();
@@ -64,7 +72,27 @@
       nsgaResult = null;
       selectedFrontIdx = -1;
       mode = 'idle';
-      status = `forest: ${r.tree_count} trees, layout=${r.layout}`;
+      status = `forest: ${r.tree_count} trees, layout=${r.layout}, hotspots=${params.n_hotspots}`;
+    } catch (e) {
+      status = `error: ${e.message}`;
+    } finally {
+      busy = false;
+    }
+  }
+
+  async function doRegenHeatmap() {
+    if (!grid.length) return;
+    busy = true;
+    status = 'regenerating hot zones…';
+    try {
+      const r = await generateHeatmap({
+        rows: grid.length, cols: grid[0].length,
+        n_hotspots: params.n_hotspots,
+        heatmap_seed: params.heatmap_seed,
+        hotspot_strength: params.hotspot_strength,
+      });
+      heatmap = r.heatmap;
+      status = `hot zones updated: ${params.n_hotspots} hotspot(s), seed=${params.heatmap_seed}`;
     } catch (e) {
       status = `error: ${e.message}`;
     } finally {
@@ -114,9 +142,43 @@
     burningSet = new Set();
   }
 
+  async function doRandomSpark() {
+    if (!grid.length) return;
+    // Build a weighted candidate list. If no heatmap, weights default to 1
+    // (uniform). Only living, uncut trees are eligible to ignite.
+    const candidates = [];
+    const weights = [];
+    let totalWeight = 0;
+    for (let r = 0; r < grid.length; r++) {
+      for (let c = 0; c < grid[0].length; c++) {
+        if (grid[r][c] === 1 && (!cutMask || cutMask[r][c] !== 1)) {
+          const w = heatmap ? Math.max(0, heatmap[r][c]) : 1;
+          candidates.push([r, c]);
+          weights.push(w);
+          totalWeight += w;
+        }
+      }
+    }
+    if (!candidates.length || totalWeight <= 0) {
+      status = 'no tree cells available to ignite';
+      return;
+    }
+    let pick = Math.random() * totalWeight;
+    let chosen = candidates[candidates.length - 1];
+    for (let i = 0; i < candidates.length; i++) {
+      pick -= weights[i];
+      if (pick <= 0) { chosen = candidates[i]; break; }
+    }
+    ignitionPoint = chosen;
+    burnedSet = new Set();
+    burningSet = new Set();
+    await doSimulate();
+  }
+
   function makeOptimizerBody() {
     return {
       grid,
+      heatmap,
       population_size: params.population_size,
       max_generations: params.max_generations,
       mutation_rate: params.mutation_rate,
@@ -244,7 +306,9 @@
         bind:params
         {busy}
         on:generate={doGenerate}
+        on:regenHeatmap={doRegenHeatmap}
         on:simulate={doSimulate}
+        on:randomSpark={doRandomSpark}
         on:runGA={doRunGA}
         on:runNSGA2={doRunNSGA2}
       />
@@ -265,6 +329,7 @@
         <ForestCanvas
           {grid}
           {cutMask}
+          {heatmap}
           burned={burnedSet}
           burning={burningSet}
           {ignitionPoint}
