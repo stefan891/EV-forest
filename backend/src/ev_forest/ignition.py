@@ -84,27 +84,68 @@ def expected_burn(
         ]
         return max(results, key=lambda r: r.burned)
 
-    # "worst_case": exhaustive BFS search with memoization
+    # "worst_case": exhaustive BFS search with intelligent memoization
+    # Skip trees that were already burned in previous simulations
+    if len(tree_positions) == 0:
+        return simulate_fire(grid, [])
+    
     memo = {}
+    burned_from_other_fires = set()  # Trees already burned by previous simulations
 
-    def simulate_from(r: int, c: int) -> int:
-        """Simulate fire from (r,c) and return burn count (memoized)."""
+    def simulate_from(r: int, c: int) -> SimulationResult:
+        """Simulate fire from (r,c) and return full result (memoized)."""
         key = (r, c)
         if key not in memo:
             result = simulate_fire(grid, [(r, c)])
-            memo[key] = result.burned
+            memo[key] = result
         return memo[key]
 
-    # Test every tree position, find the one that burns most
+    # Heuristic: prioritize central and high-density trees for early stopping.
+    rows, cols = grid.shape
+    center_r, center_c = rows / 2, cols / 2
+    
+    # Sort tree positions by distance to center (closer first) + density heuristic
+    def heuristic_priority(pos):
+        r, c = pos
+        dist_to_center = np.sqrt((r - center_r)**2 + (c - center_c)**2)
+        neighbor_count = 0
+        for dr, dc in [(-1, -1), (-1, 0), (-1, 1), (0, -1), (0, 1), (1, -1), (1, 0), (1, 1)]:
+            nr, nc = r + dr, c + dc
+            if 0 <= nr < rows and 0 <= nc < cols and grid[nr, nc] == TREE:
+                neighbor_count += 1
+        return (dist_to_center, -neighbor_count)
+    
+    sorted_positions = sorted(tree_positions, key=heuristic_priority)
+    
+    total_trees = int((grid == TREE).sum())
+    burn_threshold = int(0.75 * total_trees)
+    
     max_burned = -1
-    worst_point = (0, 0)
     worst_result = None
+    tested_count = 0
 
-    for r, c in tree_positions:
-        burned = simulate_from(int(r), int(c))
-        if burned > max_burned:
-            max_burned = burned
-            worst_point = (int(r), int(c))
-            worst_result = simulate_fire(grid, [worst_point])
+    for r, c in sorted_positions:
+        r_int, c_int = int(r), int(c)
+        
+        # Skip if this tree was already burned in a previous simulation
+        if (r_int, c_int) in burned_from_other_fires:
+            continue
+        
+        result = simulate_from(r_int, c_int)
+        tested_count += 1
+        
+        if result.burned > max_burned:
+            max_burned = result.burned
+            worst_result = result
+            
+            # Memoize: mark all burned trees from this fire for future skipping
+            for i in range(worst_result.final_grid.shape[0]):
+                for j in range(worst_result.final_grid.shape[1]):
+                    if worst_result.final_grid[i, j] == 2:  # 2 = burned state
+                        burned_from_other_fires.add((i, j))
+        
+        # Early stopping: if we found a very destructive fire, accept it
+        if max_burned >= burn_threshold:
+            break
 
-    return worst_result if worst_result else simulate_fire(grid, [worst_point])
+    return worst_result if worst_result else simulate_fire(grid, [int(sorted_positions[0][0]), int(sorted_positions[0][1])])
